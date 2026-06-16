@@ -245,9 +245,10 @@ if (message.text) {
 let reply = "";
 
 if (isGreeting(userText)) {
-  reply = `👋 Welcome to Bleu Bakes!
+reply = `👋 Welcome to Bleu Bakes!
 
 Please choose an option:
+
 🛒 Place a New Order
 📦 Existing Order / Zomato Query
 ⭐ Share Feedback / Review
