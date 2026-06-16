@@ -1,12 +1,12 @@
 const express = require("express");
+const axios = require("axios");
 
 const app = express();
-
 app.use(express.json());
 
-app.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = "bleubakes123";
+const VERIFY_TOKEN = "bleubakes123";
 
+app.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
@@ -18,17 +18,40 @@ app.get("/webhook", (req, res) => {
   res.sendStatus(403);
 });
 
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));
+
+  try {
+    const message =
+      req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+
+    if (message) {
+      const from = message.from;
+
+      await axios.post(
+        `https://graph.facebook.com/v22.0/YOUR_PHONE_NUMBER_ID/messages`,
+        {
+          messaging_product: "whatsapp",
+          to: from,
+          text: {
+            body: "Hello from Bleu Bakes! 🍰"
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer YOUR_ACCESS_TOKEN`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  }
+
   res.sendStatus(200);
 });
 
-app.get("/", (req, res) => {
-  res.send("Bleu Bakes WhatsApp Bot Running");
-});
-
-const PORT = process.env.PORT || 10000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+app.listen(process.env.PORT || 10000, () => {
+  console.log("Server running");
 });
