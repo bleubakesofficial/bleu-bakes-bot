@@ -225,27 +225,26 @@ return reply;
 }
 
 app.post("/webhook", async (req, res) => {
-try {
-const message =
-req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+  try {
+    const message =
+      req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
-```
-if (!message) {
-  return res.sendStatus(200);
-}
+    if (!message) {
+      return res.sendStatus(200);
+    }
 
-const from = message.from;
+    const from = message.from;
 
-let userText = "";
+    let userText = "";
 
-if (message.text) {
-  userText = message.text.body;
-}
+    if (message.text) {
+      userText = message.text.body;
+    }
 
-let reply = "";
+    let reply = "";
 
-if (isGreeting(userText)) {
-reply = `👋 Welcome to Bleu Bakes!
+    if (isGreeting(userText)) {
+      reply = `👋 Welcome to Bleu Bakes!
 
 Please choose an option:
 
@@ -254,45 +253,40 @@ Please choose an option:
 ⭐ Share Feedback / Review
 🎪 Event / Stall / Collaboration
 👨‍🍳 Talk to Team`;
-} else {
-reply = await generateReply(
-from,
-userText
-);
-}
+    } else {
+      reply = await generateReply(
+        from,
+        userText
+      );
+    }
 
-await axios.post(
-  `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-  {
-    messaging_product: "whatsapp",
-    to: from,
-    text: {
-      body: reply.substring(0, 4096)
-    }
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-      "Content-Type": "application/json"
-    }
+    await axios.post(
+      `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+      {
+        messaging_product: "whatsapp",
+        to: from,
+        text: {
+          body: reply.substring(0, 4096)
+        }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(
+      error.response?.data || error.message
+    );
+
+    res.sendStatus(500);
   }
-);
-
-res.sendStatus(200);
-```
-
-} catch (error) {
-console.error(
-error.response?.data || error.message
-);
-
-```
-res.sendStatus(500);
-```
-
-}
 });
 
 app.listen(process.env.PORT || 10000, () => {
-console.log("Bleu Bakes Bot Running");
+  console.log("Bleu Bakes Bot Running");
 });
