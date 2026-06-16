@@ -10,7 +10,6 @@ const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
-const CONVERSATIONS_SHEET_ID = process.env.CONVERSATIONS_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -62,84 +61,8 @@ function isGreeting(text) {
   return greetings.includes(text.toLowerCase().trim());
 }
 
-async function getConversation(phone) {
-  const client = await auth.getClient();
-
-  const sheets = google.sheets({
-    version: "v4",
-    auth: client
-  });
-
-  const response =
-    await sheets.spreadsheets.values.get({
-      spreadsheetId: CONVERSATIONS_SHEET_ID,
-      range: "A:D"
-    });
-
-  const rows = response.data.values || [];
-
-  const row = rows.find(r => r[0] === phone);
-
-  if (!row) return "";
-
-  return row[2] || "";
-}
-
-async function saveConversation(phone, history) {
-  const client = await auth.getClient();
-
-  const sheets = google.sheets({
-    version: "v4",
-    auth: client
-  });
-
-  const response =
-    await sheets.spreadsheets.values.get({
-      spreadsheetId: CONVERSATIONS_SHEET_ID,
-      range: "A:D"
-    });
-
-  const rows = response.data.values || [];
-
-  const rowIndex =
-    rows.findIndex(r => r[0] === phone);
-
-  if (rowIndex === -1) {
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: CONVERSATIONS_SHEET_ID,
-      range: "A:D",
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [[
-          phone,
-          "chat",
-          history,
-          new Date().toISOString()
-        ]]
-      }
-    });
-  } else {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: CONVERSATIONS_SHEET_ID,
-      range: `A${rowIndex + 1}:D${rowIndex + 1}`,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [[
-          phone,
-          "chat",
-          history,
-          new Date().toISOString()
-        ]]
-      }
-    });
-  }
-}
-
 async function generateReply(phone, userMessage) {
   const menuData = await getMenuData();
-
-  const oldHistory =
-    await getConversation(phone);
 
   const menuText = menuData
     .map(
@@ -153,9 +76,6 @@ You are Bleu Bakes' senior bakery sales executive on WhatsApp.
 
 MENU:
 ${menuText}
-
-PREVIOUS CONVERSATION:
-${oldHistory}
 
 NEW CUSTOMER MESSAGE:
 ${userMessage}
@@ -207,19 +127,6 @@ Keep replies short and professional.
 
   const reply =
     result.response.text();
-
-  const updatedHistory = `
-${oldHistory}
-
-Customer: ${userMessage}
-
-Bot: ${reply}
-`;
-
-  await saveConversation(
-    phone,
-    updatedHistory
-  );
 
 return reply;
 }
