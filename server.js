@@ -246,7 +246,6 @@ let reply = "";
 
 if (isGreeting(userText)) {
   reply = `👋 Welcome to Bleu Bakes!
-```
 
 Please choose an option:
 🛒 Place a New Order
@@ -261,7 +260,6 @@ userText
 );
 }
 
-```
 await axios.post(
   `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
   {
