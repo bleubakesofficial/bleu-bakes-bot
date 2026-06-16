@@ -10,11 +10,13 @@ const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
+const CONVERSATIONS_SHEET_ID = process.env.CONVERSATIONS_SHEET_ID;
+const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const auth = new google.auth.GoogleAuth({
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
 app.get("/webhook", (req, res) => {
@@ -60,8 +62,84 @@ function isGreeting(text) {
   return greetings.includes(text.toLowerCase().trim());
 }
 
-async function generateReply(userMessage) {
+async function getConversation(phone) {
+  const client = await auth.getClient();
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth: client
+  });
+
+  const response =
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: CONVERSATIONS_SHEET_ID,
+      range: "A:D"
+    });
+
+  const rows = response.data.values || [];
+
+  const row = rows.find(r => r[0] === phone);
+
+  if (!row) return "";
+
+  return row[2] || "";
+}
+
+async function saveConversation(phone, history) {
+  const client = await auth.getClient();
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth: client
+  });
+
+  const response =
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: CONVERSATIONS_SHEET_ID,
+      range: "A:D"
+    });
+
+  const rows = response.data.values || [];
+
+  const rowIndex =
+    rows.findIndex(r => r[0] === phone);
+
+  if (rowIndex === -1) {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: CONVERSATIONS_SHEET_ID,
+      range: "A:D",
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[
+          phone,
+          "chat",
+          history,
+          new Date().toISOString()
+        ]]
+      }
+    });
+  } else {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: CONVERSATIONS_SHEET_ID,
+      range: `A${rowIndex + 1}:D${rowIndex + 1}`,
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[
+          phone,
+          "chat",
+          history,
+          new Date().toISOString()
+        ]]
+      }
+    });
+  }
+}
+
+async function generateReply(phone, userMessage) {
   const menuData = await getMenuData();
+
+  const oldHistory =
+    await getConversation(phone);
 
   const menuText = menuData
     .map(
@@ -71,98 +149,104 @@ async function generateReply(userMessage) {
     .join("\n");
 
   const prompt = `
-You are the official WhatsApp assistant for Bleu Bakes Cafe & Bakery.
+You are Bleu Bakes' senior bakery sales executive on WhatsApp.
 
-MENU DATABASE:
+MENU:
 ${menuText}
+
+PREVIOUS CONVERSATION:
+${oldHistory}
+
+NEW CUSTOMER MESSAGE:
+${userMessage}
 
 RULES:
 
-You have access to the menu above.
-
-Never invent prices.
-Never invent menu items.
-
-Only show welcome menu when customer says:
-hi
-hello
-hey
-start
-
-WELCOME MESSAGE:
-
-👋 Welcome to Bleu Bakes!
-
-Please choose an option:
-🛒 Place a New Order
-📦 Existing Order / Zomato Query
-⭐ Share Feedback / Review
-🎪 Event / Stall / Collaboration
-👨‍🍳 Talk to Team
-
-ORDER RULES:
-• Minimum order value is ₹250.
-• Never confirm orders.
-• Collect details before placing requests.
-• Always be friendly and concise.
+- Use previous conversation context.
+- Never forget previously collected details.
+- Never ask again for information already provided.
+- Ask maximum 2 questions at a time.
+- Sound human and conversational.
+- Use attractive WhatsApp formatting.
+- Never invent menu items.
+- Never invent prices.
+- Minimum order value ₹250.
 
 CUSTOM CAKE FLOW:
 
-Collect:
-• Reference Image
+Collect only missing details:
+
+• Theme
+• Reference image (optional)
 • Date
 • Time
 • Weight
 • Flavour
-• Delivery or Pickup
+• Delivery/Pickup
+• Address if delivery
 
-DELIVERY PIN CODES:
+If customer says:
+"No image"
+"No reference"
+"You choose"
 
-110040
-110039
-110036
-110082
-131028
-131029
+Then continue order without asking for image again.
 
-If unsupported PIN:
+Before asking next question,
+briefly summarize collected details.
 
-Currently we deliver only in North Delhi, Kundli, Rai Industrial Area and Rajiv Gandhi Education City.
-
-USER MESSAGE:
-${userMessage}
+Keep replies short and professional.
 `;
 
   const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash"
   });
 
-  const result = await model.generateContent(prompt);
+  const result =
+    await model.generateContent(prompt);
 
-  return result.response.text();
+  const reply =
+    result.response.text();
+
+  const updatedHistory = `
+${oldHistory}
+
+Customer: ${userMessage}
+
+Bot: ${reply}
+`;
+
+  await saveConversation(
+    phone,
+    updatedHistory
+  );
+
+return reply;
 }
 
 app.post("/webhook", async (req, res) => {
-  try {
-    const message =
-      req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+try {
+const message =
+req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
-    if (!message) {
-      return res.sendStatus(200);
-    }
+```
+if (!message) {
+  return res.sendStatus(200);
+}
 
-    const from = message.from;
+const from = message.from;
 
-    let userText = "";
+let userText = "";
 
-    if (message.text) {
-      userText = message.text.body;
-    }
+if (message.text) {
+  userText = message.text.body;
+}
 
-    let reply = "";
+let reply = "";
 
-    if (isGreeting(userText)) {
-      reply = `👋 Welcome to Bleu Bakes!
+if (isGreeting(userText)) {
+  reply = `👋 Welcome to Bleu Bakes!
+```
 
 Please choose an option:
 🛒 Place a New Order
@@ -170,37 +254,46 @@ Please choose an option:
 ⭐ Share Feedback / Review
 🎪 Event / Stall / Collaboration
 👨‍🍳 Talk to Team`;
-    } else {
-      reply = await generateReply(userText);
+} else {
+reply = await generateReply(
+from,
+userText
+);
+}
+
+```
+await axios.post(
+  `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+  {
+    messaging_product: "whatsapp",
+    to: from,
+    text: {
+      body: reply.substring(0, 4096)
     }
-
-    await axios.post(
-      `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-      {
-        messaging_product: "whatsapp",
-        to: from,
-        text: {
-          body: reply.substring(0, 4096)
-        }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    res.sendStatus(200);
-  } catch (error) {
-    console.error(
-      error.response?.data || error.message
-    );
-
-    res.sendStatus(500);
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+      "Content-Type": "application/json"
+    }
   }
+);
+
+res.sendStatus(200);
+```
+
+} catch (error) {
+console.error(
+error.response?.data || error.message
+);
+
+```
+res.sendStatus(500);
+```
+
+}
 });
 
 app.listen(process.env.PORT || 10000, () => {
-  console.log("Bleu Bakes Bot Running");
+console.log("Bleu Bakes Bot Running");
 });
