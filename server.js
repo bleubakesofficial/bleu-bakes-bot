@@ -389,11 +389,11 @@ try {
   create_order: false,
   orderState: "",
   reply:
-"We're experiencing a temporary delay.
+`We're experiencing a temporary delay.
 
 📞 For an immediate response, please call or WhatsApp us directly on +91XXXXXXXXXX.
 
-Our team will be happy to assist you personally."
+Our team will be happy to assist you personally.`
 };
 }
 
