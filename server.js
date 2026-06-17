@@ -9,6 +9,7 @@ app.use(express.json());
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
+const ORDER_STATE_SHEET_ID = process.env.ORDER_STATE_SHEET_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
 
@@ -90,7 +91,86 @@ async function saveOrder(order) {
     }
   });
 }
+async function getOrderState(phone) {
+  const client = await auth.getClient();
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth: client
+  });
+
+  const response =
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: ORDER_STATE_SHEET_ID,
+      range: "A:C"
+    });
+
+  const rows =
+    response.data.values || [];
+
+  const row =
+    rows.find(r => r[0] === phone);
+
+  return row ? row[1] : "";
+}
+async function saveOrderState(
+  phone,
+  state
+) {
+  const client = await auth.getClient();
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth: client
+  });
+
+  const response =
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: ORDER_STATE_SHEET_ID,
+      range: "A:C"
+    });
+
+  const rows =
+    response.data.values || [];
+
+  const rowIndex =
+    rows.findIndex(
+      r => r[0] === phone
+    );
+
+  if (rowIndex === -1) {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId:
+        ORDER_STATE_SHEET_ID,
+      range: "A:C",
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[
+          phone,
+          state,
+          new Date().toISOString()
+        ]]
+      }
+    });
+  } else {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId:
+        ORDER_STATE_SHEET_ID,
+      range: `A${rowIndex + 1}:C${rowIndex + 1}`,
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[
+          phone,
+          state,
+          new Date().toISOString()
+        ]]
+      }
+    });
+  }
+}
 async function generateReply(phone, userMessage) {
+  const orderState =
+  await getOrderState(phone);
   const menuData = await getMenuData();
 
   const menuText = menuData
@@ -99,9 +179,22 @@ async function generateReply(phone, userMessage) {
         `${item.category} | ${item.subcategory} | ${item.item} | ${item.size} | ₹${item.price}`
     )
     .join("\n");
-
+  
+const currentDateTime =
+  new Date().toLocaleString(
+    "en-IN",
+    {
+      timeZone: "Asia/Kolkata"
+    }
+  );
+  
   const prompt = `
 You are Bleu Bakes' senior bakery sales executive on WhatsApp.
+
+CURRENT DATE & TIME:
+${currentDateTime}
+CURRENT ORDER STATE:
+${orderState}
 
 MENU:
 ${menuText}
@@ -109,17 +202,48 @@ ${menuText}
 NEW CUSTOMER MESSAGE:
 ${userMessage}
 
+Always maintain and update the current order state.
+
+Return:
+
+{
+  "create_order": false,
+  "orderState": "",
+  "reply": ""
+}
+{
+  "create_order": true,
+  "orderState": "",
+  ...
+}
+
 RULES:
 
-- Use previous conversation context.
-- Never forget previously collected details.
-- Never ask again for information already provided.
 - Ask maximum 2 questions at a time.
 - Sound human and conversational.
 - Use attractive WhatsApp formatting.
 - Never invent menu items.
 - Never invent prices.
 - Minimum order value ₹250.
+
+If a customer asks for the full menu, do NOT display every item at once.
+
+Instead show categories:
+
+🎂 Cakes
+🍰 Pastries
+🧁 Cupcakes
+🫙 Jar Cakes
+🍫 Brownies
+🍮 Desserts
+🍕 Pizza
+🍝 Pasta & Garlic Bread
+🍟 Snacks
+🥤 Beverages
+
+Then ask:
+
+"Which category would you like to explore?"
 
 CUSTOM CAKE FLOW:
 
@@ -180,8 +304,9 @@ return JSON in this format:
 Otherwise return:
 
 {
- "create_order": false,
- "reply": ""
+  "create_order": false,
+  "orderState": "",
+  "reply": ""
 }
 `;
 
@@ -189,17 +314,32 @@ Otherwise return:
     model: "gemini-2.5-flash"
   });
 
-  const result =
+  let result;
+
+try {
+  result =
     await model.generateContent(prompt);
+} catch (error) {
+  return {
+  create_order: false,
+  orderState: "",
+  reply:
+    "⚠️ We're receiving a high number of requests right now. Please try again in a moment."
+};
+}
 
   const text =
-  result.response.text();
+  result.response.text()
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
 
 try {
   return JSON.parse(text);
 } catch {
   return {
     create_order: false,
+    orderState: "",
     reply: text
   };
 }
@@ -240,7 +380,12 @@ Please choose an option:
     from,
     userText
   );
-
+if (aiResponse.orderState) {
+  await saveOrderState(
+    from,
+    aiResponse.orderState
+  );
+}
 if (aiResponse.create_order) {
 
   await saveOrder({
@@ -256,7 +401,10 @@ if (aiResponse.create_order) {
     address:
       aiResponse.address
   });
-
+await saveOrderState(
+  from,
+  ""
+);
   reply =
     aiResponse.reply ||
     "🎉 Your order request has been received successfully. Our team will contact you shortly.";
