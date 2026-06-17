@@ -357,7 +357,6 @@ app.post("/webhook", async (req, res) => {
     const from = message.from;
     console.log("Webhook hit");
     console.log("From:", from);
-    console.log("Message:", userText);
 
     let userText = "";
 
