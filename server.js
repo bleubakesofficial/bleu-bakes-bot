@@ -365,6 +365,17 @@ return JSON in this format:
  "address": "",
  "reply": ""
 }
+IMPORTANT:
+
+Return ONLY valid JSON.
+
+Do NOT return markdown.
+Do NOT return code blocks.
+Do NOT return explanations.
+Do NOT return text before JSON.
+Do NOT return text after JSON.
+
+Your entire response must be exactly one valid JSON object.
 
 Otherwise return:
 
