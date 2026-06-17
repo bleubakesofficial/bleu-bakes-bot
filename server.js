@@ -61,6 +61,35 @@ function isGreeting(text) {
   return greetings.includes(text.toLowerCase().trim());
 }
 
+async function saveOrder(order) {
+  const client = await auth.getClient();
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth: client
+  });
+
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: ORDERS_SHEET_ID,
+    range: "A:K",
+    valueInputOption: "RAW",
+    requestBody: {
+      values: [[
+        new Date().toISOString(),
+        order.phone || "",
+        order.name || "",
+        order.items || "",
+        order.weight || "",
+        order.flavour || "",
+        order.date || "",
+        order.time || "",
+        order.deliveryType || "",
+        order.address || "",
+        "NEW"
+      ]]
+    }
+  });
+}
 async function generateReply(phone, userMessage) {
   const menuData = await getMenuData();
 
@@ -116,6 +145,44 @@ Before asking next question,
 briefly summarize collected details.
 
 Keep replies short and professional.
+
+Once all order details are collected, show a complete order summary and ask:
+
+"Would you like to confirm this order?"
+
+Do NOT create an order immediately after collecting details.
+
+Only if the customer explicitly says:
+- Confirm
+- Confirm Order
+- Yes Confirm
+- Place Order
+- Book It
+
+then create the order.
+
+If customer is confirming an order,
+return JSON in this format:
+
+{
+ "create_order": true,
+ "name": "",
+ "items": "",
+ "weight": "",
+ "flavour": "",
+ "date": "",
+ "time": "",
+ "deliveryType": "",
+ "address": "",
+ "reply": ""
+}
+
+Otherwise return:
+
+{
+ "create_order": false,
+ "reply": ""
+}
 `;
 
   const model = genAI.getGenerativeModel({
@@ -125,10 +192,17 @@ Keep replies short and professional.
   const result =
     await model.generateContent(prompt);
 
-  const reply =
-    result.response.text();
+  const text =
+  result.response.text();
 
-return reply;
+try {
+  return JSON.parse(text);
+} catch {
+  return {
+    create_order: false,
+    reply: text
+  };
+}
 }
 
 app.post("/webhook", async (req, res) => {
@@ -161,10 +235,38 @@ Please choose an option:
 🎪 Event / Stall / Collaboration
 👨‍🍳 Talk to Team`;
     } else {
-      reply = await generateReply(
-        from,
-        userText
-      );
+     const aiResponse =
+  await generateReply(
+    from,
+    userText
+  );
+
+if (aiResponse.create_order) {
+
+  await saveOrder({
+    phone: from,
+    name: aiResponse.name,
+    items: aiResponse.items,
+    weight: aiResponse.weight,
+    flavour: aiResponse.flavour,
+    date: aiResponse.date,
+    time: aiResponse.time,
+    deliveryType:
+      aiResponse.deliveryType,
+    address:
+      aiResponse.address
+  });
+
+  reply =
+    aiResponse.reply ||
+    "🎉 Your order request has been received successfully. Our team will contact you shortly.";
+
+} else {
+
+  reply =
+    aiResponse.reply ||
+    "Thank you for contacting Bleu Bakes.";
+}
     }
 
     await axios.post(
