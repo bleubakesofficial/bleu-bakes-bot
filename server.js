@@ -528,7 +528,7 @@ if (
                 },
                 {
                   id: "existing_order",
-                  title: "Existing Order / Zomato Query"
+                  title: "Order / Zomato Query"
                 }
               ]
             }
