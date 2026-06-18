@@ -441,23 +441,161 @@ app.post("/webhook", async (req, res) => {
     let userText = "";
 
     if (message.text) {
-      userText = message.text.body;
-    }
+  userText = message.text.body;
+}
+
+if (
+  message.interactive?.button_reply
+) {
+  userText =
+    message.interactive.button_reply.id;
+}
 
     let reply = "";
 
     if (isGreeting(userText)) {
-      reply = `👋 Welcome to Bleu Bakes!
 
-Please choose an option:
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: {
+          text: "👋 Welcome to Bleu Bakes!\n\nHow may we assist you today?"
+        },
+        action: {
+          buttons: [
+            {
+              type: "reply",
+              reply: {
+                id: "orders_queries",
+                title: "🛒 Orders"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "events",
+                title: "🎪 Events"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "support",
+                title: "💬 Support"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
 
-🛒 Place a New Order
-📦 Existing Order / Zomato Query
-⭐ Share Feedback / Review
-🎪 Event / Stall / Collaboration
-👨‍🍳 Talk to Team`;
-    } else {
-     const aiResponse =
+  return res.sendStatus(200);
+} else {
+     if (userText === "orders_queries") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🛒 Orders & Queries"
+        },
+        action: {
+          button: "View Options",
+          sections: [
+            {
+              title: "Orders",
+              rows: [
+                {
+                  id: "new_order",
+                  title: "Place a New Order"
+                },
+                {
+                  id: "existing_order",
+                  title: "Existing Order / Zomato Query"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+      if (userText === "events") {
+
+  reply =
+    "🎪 Please tell us more about your event, stall requirement or collaboration request and our team will assist you shortly.";
+
+}
+      if (userText === "support") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "💬 Feedback & Support"
+        },
+        action: {
+          button: "View Options",
+          sections: [
+            {
+              title: "Support",
+              rows: [
+                {
+                  id: "feedback",
+                  title: "Share Feedback"
+                },
+                {
+                  id: "talk_team",
+                  title: "Talk to Team"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+      const aiResponse =
   await generateReply(
     from,
     userText
