@@ -1177,13 +1177,41 @@ Please tell us what went wrong so we can improve.`;
   return res.sendStatus(200);
 }
       
-      if (userText === "talk_team") {
-reply =
-`👨‍🍳 Our team will be happy to assist you.
+     if (userText === "talk_team") {
 
-📞 Call / WhatsApp:
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: ADMIN_PHONE,
+      text: {
+        body:
+`🔔 Bleu Bakes Support Alert
+
+Customer needs assistance.
+
+📱 Phone:
+${from}
+
+💬 Message:
+Talk to Team`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  reply =
+`👨‍🍳 Our team has been notified.
+
+We will get back to you shortly.
+
+📞 For urgent assistance:
 +91XXXXXXXXXX`;
-return;
 }
       if (userText === "feedback") {
 reply =
