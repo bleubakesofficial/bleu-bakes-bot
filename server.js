@@ -426,11 +426,15 @@ try {
 }
 
 app.post("/webhook", async (req, res) => {
+  console.log(
+  JSON.stringify(req.body, null, 2)
+);
   try {
     const message =
       req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
     if (!message) {
+      return res.sendStatus(200);
     }
 
     const from = message.from;
@@ -501,7 +505,7 @@ if (message.interactive?.list_reply) {
       }
     }
   );
-
+ return res.sendStatus(200);
     } else {
      if (userText === "orders_queries") {
 
