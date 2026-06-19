@@ -918,6 +918,39 @@ How may we assist you today?`
 
   return res.sendStatus(200);
 }
+      if (
+  userText === "src_instagram" ||
+  userText === "src_google" ||
+  userText === "src_friend" ||
+  userText === "src_zomato" ||
+  userText === "src_other"
+) {
+
+  const sourceMap = {
+    src_instagram: "Instagram",
+    src_google: "Google Maps",
+    src_friend: "Friend / Family",
+    src_zomato: "Zomato",
+    src_other: "Other"
+  };
+
+  await saveFeedback(
+    from,
+    "",
+    sourceMap[userText],
+    ""
+  );
+
+  reply =
+`🎉 Thank you!
+
+We've recorded:
+
+📍 ${sourceMap[userText]}
+
+This helps us understand where our customers discover Bleu Bakes.`;
+
+}
      if (userText === "events") {
 
   await axios.post(
