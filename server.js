@@ -837,15 +837,11 @@ How was your experience?`
   return res.sendStatus(200);
 }
 
-      if (userText === "loved_it") {
+    if (userText === "loved_it") {
 
-  await saveFeedback(
-    from,
-    "Loved It"
-  );
+  await saveFeedback(from,"Loved It");
 
-  reply =
-`😍 Thank you!
+  reply = `😍 Thank you!
 
 We're so happy you loved it.
 
@@ -855,6 +851,9 @@ YOUR_GOOGLE_REVIEW_LINK
 📸 Follow us on Instagram:
 YOUR_INSTAGRAM_LINK`;
 
+  await axios.post(...);
+
+  return res.sendStatus(200);
 }
       if (userText === "good") {
 
