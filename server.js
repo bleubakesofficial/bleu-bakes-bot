@@ -781,6 +781,115 @@ reply =
 YOUR_INSTAGRAM_LINK`;
 return;
 }
+if (userText === "send_feedback") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: {
+          text:
+`⭐⭐⭐⭐⭐
+
+Thank you for choosing Bleu Bakes!
+
+How was your experience?`
+        },
+        action: {
+          buttons: [
+            {
+              type: "reply",
+              reply: {
+                id: "loved_it",
+                title: "😍 Loved It"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "good",
+                title: "🙂 Good"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "could_be_better",
+                title: "😕 Could Be Better"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+if (userText === "loved_it") {
+
+  await saveFeedback(
+    from,
+    "Loved It"
+  );
+
+  reply =
+`😍 Thank you!
+
+We're so happy you loved it.
+
+Would you mind sharing a Google Review?
+
+YOUR_GOOGLE_REVIEW_LINK
+
+📸 Follow us on Instagram:
+
+YOUR_INSTAGRAM_LINK
+
+How did you hear about Bleu Bakes?
+
+• Google Maps
+• Instagram
+• Friend / Family
+• Zomato
+• Other`;
+}
+if (userText === "good") {
+
+  await saveFeedback(
+    from,
+    "Good"
+  );
+
+  reply =
+`🙂 Thank you for your feedback.
+
+What could we improve?
+
+Please reply with your feedback.`;
+}
+if (userText === "could_be_better") {
+
+  await saveFeedback(
+    from,
+    "Could Be Better"
+  );
+
+  reply =
+`😕 We're sorry your experience wasn't perfect.
+
+Please tell us what went wrong so our team can improve.`;
+}
       if (userText === "talk_team") {
 reply =
 `👨‍🍳 Our team will be happy to assist you.
