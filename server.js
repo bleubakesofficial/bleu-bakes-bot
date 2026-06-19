@@ -505,28 +505,28 @@ if (message.interactive?.list_reply) {
         },
         action: {
           buttons: [
-            {
-              type: "reply",
-              reply: {
-                id: "orders_queries",
-                title: "🛒 Orders"
-              }
-            },
-            {
-              type: "reply",
-              reply: {
-                id: "events",
-                title: "🎪 Events"
-              }
-            },
-            {
-              type: "reply",
-              reply: {
-                id: "support",
-                title: "💬 Support"
-              }
-            }
-          ]
+{
+  type: "reply",
+  reply: {
+    id: "orders_queries",
+    title: "🛒 Orders"
+  }
+},
+{
+  type: "reply",
+  reply: {
+    id: "events",
+    title: "🎪 Events"
+  }
+},
+{
+  type: "reply",
+  reply: {
+    id: "more_menu",
+    title: "⚙️ More Menu"
+  }
+}
+]
         }
       }
     },
@@ -712,6 +712,211 @@ reply =
 • Reason for cancellation/refund request
 
 Our team will review and contact you shortly.`;
+}
+      if (userText === "more_menu") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: {
+          text:
+`⚙️ More Menu
+
+Please choose an option:`
+        },
+        action: {
+          buttons: [
+            {
+              type: "reply",
+              reply: {
+                id: "support_menu",
+                title: "💬 Support"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "source_menu",
+                title: "📍 Found Us"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "back_main",
+                title: "↩️ Back"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+      if (userText === "back_main") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: {
+          text:
+`👋 Welcome to Bleu Bakes!
+
+How may we assist you today?`
+        },
+        action: {
+          buttons: [
+            {
+              type: "reply",
+              reply: {
+                id: "orders_queries",
+                title: "🛒 Orders"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "events",
+                title: "🎪 Events"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "more_menu",
+                title: "⚙️ More Menu"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+      if (userText === "support_menu") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "list",
+      interactive: {
+        type: "list",
+        body: {
+          text: "💬 Feedback & Support"
+        },
+        action: {
+          button: "View Options",
+          sections: [
+            {
+              title: "Support",
+              rows: [
+                {
+                  id: "feedback",
+                  title: "Leave Feedback"
+                },
+                {
+                  id: "talk_team",
+                  title: "Talk to Team"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+      if (userText === "source_menu") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "list",
+      interactive: {
+        type: "list",
+        body: {
+          text:
+"📍 How did you hear about Bleu Bakes?"
+        },
+        action: {
+          button: "Select Source",
+          sections: [
+            {
+              title: "Choose One",
+              rows: [
+                {
+                  id: "src_instagram",
+                  title: "Instagram"
+                },
+                {
+                  id: "src_google",
+                  title: "Google Maps"
+                },
+                {
+                  id: "src_friend",
+                  title: "Friend / Family"
+                },
+                {
+                  id: "src_zomato",
+                  title: "Zomato"
+                },
+                {
+                  id: "src_other",
+                  title: "Other"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
 }
      if (userText === "events") {
 
