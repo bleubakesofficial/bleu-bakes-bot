@@ -431,7 +431,6 @@ app.post("/webhook", async (req, res) => {
       req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
     if (!message) {
-// do nothing here
     }
 
     const from = message.from;
@@ -503,7 +502,6 @@ if (message.interactive?.list_reply) {
     }
   );
 
-// do nothing here
     } else {
      if (userText === "orders_queries") {
 
@@ -546,7 +544,6 @@ if (message.interactive?.list_reply) {
     }
   );
 
-// do nothing here
      }
  if (userText === "new_order") {
 
@@ -591,7 +588,6 @@ if (message.interactive?.list_reply) {
     }
   );
 
-// do nothing here
  }
       if (userText === "existing_order") {
 
@@ -646,7 +642,6 @@ if (message.interactive?.list_reply) {
     }
   );
 
-// do nothing here
       }
       if (userText === "order_update") {
 reply =
@@ -658,7 +653,6 @@ reply =
 
 Our team will provide an update on your order shortly.`;
          
-// do nothing here     
 }
       if (userText === "modify_order") {
 reply =
@@ -669,7 +663,6 @@ reply =
 
 Our team will review the request and assist you.`;
         
-// do nothing here        
 }
       if (userText === "zomato_issue") {
 reply =
@@ -677,7 +670,6 @@ reply =
 
 Our team will try to assist, although order resolutions are subject to Zomato policies.`;
         
-// do nothing here        
 }
       if (userText === "refund") {
 reply =
@@ -688,7 +680,6 @@ reply =
 
 Our team will review and contact you shortly.`;
         
-// do nothing here        
 }
      if (userText === "events") {
 
@@ -739,7 +730,6 @@ Our team will review and contact you shortly.`;
     }
   );
 
-// do nothing here
      }
       if (userText === "google_review") {
 reply =
@@ -751,7 +741,6 @@ We'd love your review:
 
 YOUR_GOOGLE_REVIEW_LINK`;
         
-// do nothing here        
 }
       if (userText === "instagram") {
 reply =
@@ -759,7 +748,6 @@ reply =
 
 YOUR_INSTAGRAM_LINK`;
         
-// do nothing here        
 }
       if (userText === "talk_team") {
 reply =
@@ -768,7 +756,6 @@ reply =
 📞 Call / WhatsApp:
 +91XXXXXXXXXX`;
         
-// do nothing here        
 }
       if (userText === "feedback") {
 reply =
@@ -776,7 +763,6 @@ reply =
 
 Please tell us about your experience with Bleu Bakes.`;
           
-// do nothing here
       }
       const aiResponse =
   await generateReply(
