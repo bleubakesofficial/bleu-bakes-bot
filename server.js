@@ -431,7 +431,7 @@ app.post("/webhook", async (req, res) => {
       req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
     if (!message) {
-      return res.sendStatus(200);
+// do nothing here
     }
 
     const from = message.from;
@@ -444,13 +444,15 @@ app.post("/webhook", async (req, res) => {
   userText = message.text.body;
 }
 
-if (
-  message.interactive?.button_reply
-) {
+if (message.interactive?.button_reply) {
   userText =
     message.interactive.button_reply.id;
 }
 
+if (message.interactive?.list_reply) {
+  userText =
+    message.interactive.list_reply.id;
+}
     let reply = "";
 
     if (isGreeting(userText)) {
@@ -501,8 +503,8 @@ if (
     }
   );
 
-  return res.sendStatus(200);
-} else {
+// do nothing here
+    } else {
      if (userText === "orders_queries") {
 
   await axios.post(
@@ -544,15 +546,9 @@ if (
     }
   );
 
-  return res.sendStatus(200);
-}
-      if (userText === "events") {
-
-  reply =
-    "🎪 Please tell us more about your event, stall requirement or collaboration request and our team will assist you shortly.";
-
-}
-      if (userText === "support") {
+// do nothing here
+     }
+ if (userText === "new_order") {
 
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
@@ -563,17 +559,74 @@ if (
       interactive: {
         type: "list",
         body: {
-          text: "💬 Feedback & Support"
+          text: "🎂 What would you like to order?"
+        },
+        action: {
+          button: "View Categories",
+          sections: [
+            {
+              title: "Menu Categories",
+              rows: [
+                { id: "cakes", title: "🎂 Cakes" },
+                { id: "pastries", title: "🍰 Pastries" },
+                { id: "cupcakes", title: "🧁 Cupcakes" },
+                { id: "jar_cakes", title: "🫙 Jar Cakes" },
+                { id: "brownies", title: "🍫 Brownies" },
+                { id: "desserts", title: "🍮 Desserts" },
+                { id: "pizza", title: "🍕 Pizza" },
+                { id: "pasta", title: "🍝 Pasta & Garlic Bread" },
+                { id: "snacks", title: "🍟 Snacks" },
+                { id: "beverages", title: "🥤 Beverages" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+// do nothing here
+ }
+      if (userText === "existing_order") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "📦 Existing Order / Zomato Query"
         },
         action: {
           button: "View Options",
           sections: [
             {
-              title: "Support",
+              title: "Order Support",
               rows: [
                 {
-                  id: "feedback",
-                  title: "Share Feedback"
+                  id: "order_update",
+                  title: "Order Updates"
+                },
+                {
+                  id: "modify_order",
+                  title: "Modify Existing Order"
+                },
+                {
+                  id: "zomato_issue",
+                  title: "Zomato Order Issue"
+                },
+                {
+                  id: "refund",
+                  title: "Refund / Cancellation"
                 },
                 {
                   id: "talk_team",
@@ -593,8 +646,138 @@ if (
     }
   );
 
-  return res.sendStatus(200);
+// do nothing here
+      }
+      if (userText === "order_update") {
+reply =
+`📦 Please share:
+
+• Customer Name
+• Mobile Number
+• Order Date
+
+Our team will provide an update on your order shortly.`;
+         
+// do nothing here     
 }
+      if (userText === "modify_order") {
+reply =
+`✏️ Please share:
+
+• Order Number (if available)
+• Changes required
+
+Our team will review the request and assist you.`;
+        
+// do nothing here        
+}
+      if (userText === "zomato_issue") {
+reply =
+`🍽️ Please share your Zomato order details and issue.
+
+Our team will try to assist, although order resolutions are subject to Zomato policies.`;
+        
+// do nothing here        
+}
+      if (userText === "refund") {
+reply =
+`📋 Please share:
+
+• Order Number
+• Reason for cancellation/refund request
+
+Our team will review and contact you shortly.`;
+        
+// do nothing here        
+}
+     if (userText === "events") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🎪 Events & Collaborations"
+        },
+        action: {
+          button: "View Options",
+          sections: [
+            {
+              title: "Events",
+              rows: [
+                {
+                  id: "society_stall",
+                  title: "Society Stall"
+                },
+                {
+                  id: "college_event",
+                  title: "College Event"
+                },
+                {
+                  id: "corporate_bulk",
+                  title: "Corporate Bulk Order"
+                },
+                {
+                  id: "collaboration",
+                  title: "Collaboration"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+// do nothing here
+     }
+      if (userText === "google_review") {
+reply =
+`⭐⭐⭐⭐⭐
+
+Thank you for choosing Bleu Bakes.
+
+We'd love your review:
+
+YOUR_GOOGLE_REVIEW_LINK`;
+        
+// do nothing here        
+}
+      if (userText === "instagram") {
+reply =
+`📸 Follow Bleu Bakes
+
+YOUR_INSTAGRAM_LINK`;
+        
+// do nothing here        
+}
+      if (userText === "talk_team") {
+reply =
+`👨‍🍳 Our team will be happy to assist you.
+
+📞 Call / WhatsApp:
++91XXXXXXXXXX`;
+        
+// do nothing here        
+}
+      if (userText === "feedback") {
+reply =
+`⭐ We'd love your feedback.
+
+Please tell us about your experience with Bleu Bakes.`;
+          
+// do nothing here
+      }
       const aiResponse =
   await generateReply(
     from,
