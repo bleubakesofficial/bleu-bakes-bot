@@ -9,6 +9,7 @@ app.use(express.json());
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
+const ADMIN_PHONE = "91XXXXXXXXXX";
 const ORDER_STATE_SHEET_ID = process.env.ORDER_STATE_SHEET_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
@@ -1190,6 +1191,145 @@ reply =
 
 Please tell us about your experience with Bleu Bakes.`;
 return;
+}
+      if (
+  userText.startsWith("ready ")
+) {
+
+  const customerPhone =
+    userText
+      .replace("ready ", "")
+      .trim();
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: customerPhone,
+      text: {
+        body:
+`🎂 Your order is ready!
+
+You may now collect your order from Bleu Bakes.
+
+Thank you for choosing us ❤️`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  reply =
+`✅ Ready notification sent to ${customerPhone}`;
+
+  return;
+}
+      if (
+  userText.startsWith("out ")
+) {
+
+  const customerPhone =
+    userText
+      .replace("out ", "")
+      .trim();
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: customerPhone,
+      text: {
+        body:
+`🚚 Good news!
+
+Your order is on the way.
+
+We'll see you soon ❤️`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  reply =
+`✅ Out For Delivery notification sent to ${customerPhone}`;
+
+  return;
+}
+      if (
+  userText.startsWith("delivered ")
+) {
+
+  const customerPhone =
+    userText
+      .replace("delivered ", "")
+      .trim();
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: customerPhone,
+      text: {
+        body:
+`🎉 Your order has been delivered.
+
+We hope you enjoy every bite!
+
+Thank you for choosing Bleu Bakes ❤️`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  reply =
+`✅ Delivered notification sent to ${customerPhone}`;
+
+  return;
+}
+      if (
+  userText.startsWith("feedback ")
+) {
+
+  const customerPhone =
+    userText
+      .replace("feedback ", "")
+      .trim();
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: customerPhone,
+      text: {
+        body: "send_feedback"
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  reply =
+`✅ Feedback request sent to ${customerPhone}`;
+
+  return;
 }
       const aiResponse =
   await generateReply(
