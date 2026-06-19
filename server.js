@@ -426,9 +426,7 @@ try {
 }
 
 app.post("/webhook", async (req, res) => {
-  console.log(
-  JSON.stringify(req.body, null, 2)
-);
+  
   try {
     const message =
       req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
@@ -656,7 +654,7 @@ reply =
 • Order Date
 
 Our team will provide an update on your order shortly.`;
-         
+return send reply and exit;      
 }
       if (userText === "modify_order") {
 reply =
@@ -666,14 +664,14 @@ reply =
 • Changes required
 
 Our team will review the request and assist you.`;
-        
+return send reply and exit;        
 }
       if (userText === "zomato_issue") {
 reply =
 `🍽️ Please share your Zomato order details and issue.
 
 Our team will try to assist, although order resolutions are subject to Zomato policies.`;
-        
+return send reply and exit;        
 }
       if (userText === "refund") {
 reply =
@@ -683,7 +681,7 @@ reply =
 • Reason for cancellation/refund request
 
 Our team will review and contact you shortly.`;
-        
+return send reply and exit;       
 }
      if (userText === "events") {
 
@@ -744,14 +742,14 @@ Thank you for choosing Bleu Bakes.
 We'd love your review:
 
 YOUR_GOOGLE_REVIEW_LINK`;
-        
+return send reply and exit;               
 }
       if (userText === "instagram") {
 reply =
 `📸 Follow Bleu Bakes
 
 YOUR_INSTAGRAM_LINK`;
-        
+  return send reply and exit;             
 }
       if (userText === "talk_team") {
 reply =
@@ -759,14 +757,14 @@ reply =
 
 📞 Call / WhatsApp:
 +91XXXXXXXXXX`;
-        
+return send reply and exit;               
 }
       if (userText === "feedback") {
 reply =
 `⭐ We'd love your feedback.
 
 Please tell us about your experience with Bleu Bakes.`;
-          
+return send reply and exit;                 
       }
       const aiResponse =
   await generateReply(
