@@ -654,7 +654,6 @@ reply =
 • Order Date
 
 Our team will provide an update on your order shortly.`;
-return;   
 }
       if (userText === "modify_order") {
 reply =
@@ -664,14 +663,12 @@ reply =
 • Changes required
 
 Our team will review the request and assist you.`;
-return;
 }
       if (userText === "zomato_issue") {
 reply =
 `🍽️ Please share your Zomato order details and issue.
 
 Our team will try to assist, although order resolutions are subject to Zomato policies.`;
-return;
 }
       if (userText === "refund") {
 reply =
@@ -681,7 +678,6 @@ reply =
 • Reason for cancellation/refund request
 
 Our team will review and contact you shortly.`;
-return;
 }
      if (userText === "events") {
 
