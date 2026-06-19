@@ -836,7 +836,8 @@ How was your experience?`
 
   return res.sendStatus(200);
 }
-if (userText === "loved_it") {
+
+      if (userText === "loved_it") {
 
   await saveFeedback(
     from,
@@ -848,23 +849,15 @@ if (userText === "loved_it") {
 
 We're so happy you loved it.
 
-Would you mind sharing a Google Review?
-
+⭐ Please leave us a Google Review:
 YOUR_GOOGLE_REVIEW_LINK
 
 📸 Follow us on Instagram:
+YOUR_INSTAGRAM_LINK`;
 
-YOUR_INSTAGRAM_LINK
-
-How did you hear about Bleu Bakes?
-
-• Google Maps
-• Instagram
-• Friend / Family
-• Zomato
-• Other`;
+  return;
 }
-if (userText === "good") {
+      if (userText === "good") {
 
   await saveFeedback(
     from,
@@ -872,12 +865,13 @@ if (userText === "good") {
   );
 
   reply =
-`🙂 Thank you for your feedback.
+`🙂 Thank you!
 
-What could we improve?
+What could we do to make your experience even better?`;
 
-Please reply with your feedback.`;
+  return;
 }
+
 if (userText === "could_be_better") {
 
   await saveFeedback(
@@ -886,10 +880,13 @@ if (userText === "could_be_better") {
   );
 
   reply =
-`😕 We're sorry your experience wasn't perfect.
+`😕 We're sorry we missed the mark.
 
-Please tell us what went wrong so our team can improve.`;
+Please tell us what went wrong so we can improve.`;
+
+  return;
 }
+      
       if (userText === "talk_team") {
 reply =
 `👨‍🍳 Our team will be happy to assist you.
