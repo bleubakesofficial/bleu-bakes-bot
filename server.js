@@ -855,7 +855,6 @@ YOUR_GOOGLE_REVIEW_LINK
 📸 Follow us on Instagram:
 YOUR_INSTAGRAM_LINK`;
 
-  return;
 }
       if (userText === "good") {
 
@@ -869,7 +868,6 @@ YOUR_INSTAGRAM_LINK`;
 
 What could we do to make your experience even better?`;
 
-  return;
 }
 
 if (userText === "could_be_better") {
@@ -884,7 +882,6 @@ if (userText === "could_be_better") {
 
 Please tell us what went wrong so we can improve.`;
 
-  return;
 }
       
       if (userText === "talk_team") {
