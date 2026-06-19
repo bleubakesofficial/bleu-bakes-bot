@@ -12,6 +12,7 @@ const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const ORDER_STATE_SHEET_ID = process.env.ORDER_STATE_SHEET_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
+const REMINDER_SHEET_ID = process.env.REMINDER_SHEET_ID;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -167,6 +168,33 @@ async function saveOrderState(
       }
     });
   }
+}
+async function saveReminder(
+  phone,
+  state,
+  reminderType
+) {
+  const client = await auth.getClient();
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth: client
+  });
+
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: REMINDER_SHEET_ID,
+    range: "A:E",
+    valueInputOption: "RAW",
+    requestBody: {
+      values: [[
+        phone,
+        state,
+        new Date().toISOString(),
+        reminderType,
+        "no"
+      ]]
+    }
+  });
 }
 async function generateReply(phone, userMessage) {
   const orderState =
@@ -548,7 +576,11 @@ if (message.interactive?.list_reply) {
        return res.sendStatus(200);
      }
  if (userText === "new_order") {
-
+await saveReminder(
+  from,
+  "menu_browse",
+  "menu_browse"
+);
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -767,6 +799,18 @@ return;
     from,
     userText
   );
+      if (
+  aiResponse.orderState &&
+  aiResponse.orderState
+    .toLowerCase()
+    .includes("theme")
+) {
+  await saveReminder(
+    from,
+    "custom_cake",
+    "custom_cake"
+  );
+}
 if (aiResponse.orderState) {
   await saveOrderState(
     from,
