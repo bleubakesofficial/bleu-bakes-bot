@@ -826,9 +826,9 @@ How may we assist you today?`
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "list",
+      type: "interactive",
       interactive: {
-        type: "list",
+        type: "interactive",
         body: {
           text: "💬 Feedback & Support"
         },
@@ -869,9 +869,9 @@ How may we assist you today?`
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "list",
+      type: "interactive",
       interactive: {
-        type: "list",
+        type: "interactive",
         body: {
           text:
 "📍 How did you hear about Bleu Bakes?"
