@@ -1213,6 +1213,41 @@ We will get back to you shortly.
 📞 For urgent assistance:
 +91XXXXXXXXXX`;
 }
+      if (userText === "1") {
+
+  reply =
+`🍫 Brownie added to your order.
+
+Anything else you'd like?`;
+
+}
+
+if (userText === "2") {
+
+  reply =
+`🧁 Cupcake added to your order.
+
+Anything else you'd like?`;
+
+}
+
+if (userText === "3") {
+
+  reply =
+`🍰 Jar Cake added to your order.
+
+Anything else you'd like?`;
+
+}
+
+if (userText === "4") {
+
+  reply =
+`👍 No problem.
+
+We'll continue with your order.`;
+
+}
       if (userText === "feedback") {
 reply =
 `⭐ We'd love your feedback.
@@ -1391,8 +1426,20 @@ await saveOrderState(
   ""
 );
   reply =
-    aiResponse.reply ||
-    "🎉 Your order request has been received successfully. Our team will contact you shortly.";
+`${aiResponse.reply ||
+
+"🎉 Your order request has been received successfully. Our team will contact you shortly."}
+
+━━━━━━━━━━━━━━
+
+🎁 Add something extra?
+
+Reply:
+
+1 = Brownie ₹110
+2 = Cupcake ₹130
+3 = Jar Cake ₹200
+4 = No Thanks`;
 
 } else {
 
