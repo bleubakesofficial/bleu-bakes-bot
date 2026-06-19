@@ -839,9 +839,13 @@ How was your experience?`
 
     if (userText === "loved_it") {
 
-  await saveFeedback(from,"Loved It");
+  await saveFeedback(
+    from,
+    "Loved It"
+  );
 
-  reply = `😍 Thank you!
+  reply =
+`😍 Thank you!
 
 We're so happy you loved it.
 
@@ -851,11 +855,26 @@ YOUR_GOOGLE_REVIEW_LINK
 📸 Follow us on Instagram:
 YOUR_INSTAGRAM_LINK`;
 
-  await axios.post(...);
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body: reply
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
 
   return res.sendStatus(200);
 }
-      if (userText === "good") {
+     if (userText === "good") {
 
   await saveFeedback(
     from,
@@ -867,6 +886,24 @@ YOUR_INSTAGRAM_LINK`;
 
 What could we do to make your experience even better?`;
 
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body: reply
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
 }
 
 if (userText === "could_be_better") {
@@ -881,6 +918,24 @@ if (userText === "could_be_better") {
 
 Please tell us what went wrong so we can improve.`;
 
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body: reply
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
 }
       
       if (userText === "talk_team") {
