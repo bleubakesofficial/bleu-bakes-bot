@@ -543,7 +543,7 @@ if (message.interactive?.list_reply) {
       }
     }
   );
-
+       return res.sendStatus(200);
      }
  if (userText === "new_order") {
 
@@ -587,7 +587,7 @@ if (message.interactive?.list_reply) {
       }
     }
   );
-
+return res.sendStatus(200);
  }
       if (userText === "existing_order") {
 
@@ -641,7 +641,7 @@ if (message.interactive?.list_reply) {
       }
     }
   );
-
+return res.sendStatus(200);
       }
       if (userText === "order_update") {
 reply =
@@ -729,7 +729,7 @@ Our team will review and contact you shortly.`;
       }
     }
   );
-
+return res.sendStatus(200);
      }
       if (userText === "google_review") {
 reply =
