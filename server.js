@@ -12,6 +12,7 @@ const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 const ORDER_STATE_SHEET_ID = process.env.ORDER_STATE_SHEET_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
+const FEEDBACK_SHEET_ID = process.env.FEEDBACK_SHEET_ID;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -112,6 +113,38 @@ async function getOrderState(phone) {
     rows.find(r => r[0] === phone);
 
   return row ? row[1] : "";
+}
+async function saveFeedback(
+  phone,
+  rating,
+  source = "",
+  feedback = ""
+) {
+  const client =
+    await auth.getClient();
+
+  const sheets =
+    google.sheets({
+      version: "v4",
+      auth: client
+    });
+
+  await sheets.spreadsheets.values.append({
+    spreadsheetId:
+      FEEDBACK_SHEET_ID,
+    range: "A:F",
+    valueInputOption: "RAW",
+    requestBody: {
+      values: [[
+        phone,
+        rating,
+        source,
+        feedback,
+        new Date().toISOString(),
+        "completed"
+      ]]
+    }
+  });
 }
 async function saveOrderState(
   phone,
