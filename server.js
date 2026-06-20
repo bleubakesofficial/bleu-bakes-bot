@@ -1432,11 +1432,13 @@ reply =
 
 Please share:
 
-• Theme / Design
+• Theme
 • Flavour
-• Weight Required
-• Delivery / Pickup Date
-• Reference Image (if available)
+• Weight
+• Reference Image (optional)
+• Date
+• Time
+• Delivery or Pickup
 
 Our team will help create your perfect cake ❤️`;
 }
@@ -1498,7 +1500,40 @@ Our team will help create your perfect Bento Cake ❤️`;
 );
 
 return res.sendStatus(200);
-   }     
+   } 
+      if (userText === "classic_cakes") {
+await axios.post(...list of flavours...)
+return res.sendStatus(200);
+}
+
+if (userText === "chocolate_cakes") {
+ await axios.post(...list of flavours...)
+  return res.sendStatus(200);
+}
+
+if (userText === "premium_cakes") {
+ await axios.post(...list of flavours...)
+  return res.sendStatus(200);
+}
+
+if (userText === "fruit_cakes") {
+await axios.post(...list of flavours...)
+  return res.sendStatus(200);
+}
+      if (userText === "bento_classic") {
+  await axios.post(...list of classic bento flavours...)
+  return res.sendStatus(200);
+}
+
+if (userText === "bento_chocolate") {
+  await axios.post(...list of chocolate bento flavours...)
+  return res.sendStatus(200);
+}
+
+if (userText === "bento_premium") {
+  await axios.post(...list of premium bento flavours...)
+  return res.sendStatus(200);
+}
       const aiResponse =
   await generateReply(
     from,
