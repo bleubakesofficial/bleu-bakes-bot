@@ -1546,7 +1546,7 @@ Please share the details and we'll get started 😊`;
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interative",
+      type: "interactive",
       interactive: {
         type: "list",
         body: {
@@ -1585,7 +1585,7 @@ if (userText === "chocolate_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interative",
+      type: "interactive",
       interactive: {
         type: "list",
         body: {
@@ -1624,7 +1624,7 @@ if (userText === "premium_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interative",
+      type: "interactive",
       interactive: {
         type: "list",
         body: {
@@ -1706,7 +1706,7 @@ if (userText === "fruit_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interative",
+      type: "interactive",
       interactive: {
         type: "list",
         body: {
