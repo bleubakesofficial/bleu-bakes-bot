@@ -1451,7 +1451,7 @@ Please share the details and we'll get started 😊`;
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interactive",
+      type: "list",
       interactive: {
         type: "list",
         body: {
@@ -1582,11 +1582,6 @@ if (userText === "premium_cakes") {
         },
         action: {
           button: "View Flavours",
-          sections: [{
-            title: "Premium Cakes",
-            
-           action: {
-  button: "View Flavours",
   sections: [
     {
       title: "Premium Cakes 1",
@@ -1640,11 +1635,10 @@ if (userText === "premium_cakes") {
     }
   ]
 }
-            ]
-          }]
+            
         }
       }
-    },
+    ,
     {
       headers: {
         Authorization: `Bearer ${WHATSAPP_TOKEN}`,
@@ -1698,7 +1692,7 @@ if (userText === "fruit_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interactive",
+      type: "list",
       interactive: {
         type: "list",
         body: {
@@ -1738,7 +1732,7 @@ if (userText === "bento_chocolate") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interactive",
+      type: "list",
       interactive: {
         type: "list",
         body: {
@@ -1775,7 +1769,7 @@ if (userText === "bento_premium") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "interactive",
+      type: "list",
       interactive: {
         type: "list",
         body: {
