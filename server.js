@@ -206,6 +206,11 @@ async function saveOrderState(
 async function generateReply(phone, userMessage) {
   const orderState =
   await getOrderState(phone);
+  console.log(
+  "Current Order State:",
+  orderState
+);
+  
   const menuData = await getMenuData();
 
   const menuText = menuData
@@ -243,14 +248,39 @@ Return:
 
 {
   "create_order": false,
-  "orderState": "",
+  "orderState": "Customer asked for menu",
   "reply": ""
 }
+
 {
   "create_order": true,
-  "orderState": "",
+  "orderState": "Customer ordered 1kg Chocolate Truffle Cake for pickup on 25 June",
   ...
 }
+ORDER STATE RULES:
+
+The orderState field must ALWAYS contain the latest customer context.
+
+Examples:
+
+"Customer wants a 1kg Chocolate Truffle Cake."
+
+"Customer wants a Spiderman cake for 25 June."
+
+"Customer selected delivery and provided pincode 110040."
+
+"Waiting for flavour confirmation."
+
+Never erase previously collected information.
+
+Always keep all confirmed details in orderState and append new information.
+
+Example:
+
+Customer wants 1kg Chocolate Truffle Cake
+→ Customer wants 1kg Chocolate Truffle Cake for 25 June
+→ Customer wants 1kg Chocolate Truffle Cake for 25 June pickup
+→ Customer wants 1kg Chocolate Truffle Cake for 25 June pickup, waiting for confirmation
 
 RULES:
 
@@ -1399,8 +1429,13 @@ Thank you for choosing Bleu Bakes ❤️`
     from,
     userText
   );
-     
-if (aiResponse.orderState) {
+ console.log(
+  "Gemini Order State:",
+  aiResponse.orderState
+);    
+if (
+  aiResponse.orderState !== undefined
+) {
   await saveOrderState(
     from,
     aiResponse.orderState
