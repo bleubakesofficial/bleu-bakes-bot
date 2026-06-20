@@ -1219,7 +1219,10 @@ Please tell us what went wrong so we can improve.`;
   return res.sendStatus(200);
 }
       
-     if (userText === "talk_team") {
+     if (
+  userText === "talk_team" ||
+  userText.toLowerCase() === "talk to team"
+) {
 
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
