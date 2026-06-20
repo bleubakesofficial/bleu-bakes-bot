@@ -503,6 +503,15 @@ app.post("/webhook", async (req, res) => {
     }
 
     const from = message.from;
+    const currentState =
+  await getOrderState(from);
+
+if (
+  currentState === "HUMAN_SUPPORT" &&
+  from !== ADMIN_PHONE
+) {
+  return res.sendStatus(200);
+}
     console.log("Webhook hit");
     console.log("From:", from);
 
@@ -1237,7 +1246,10 @@ Talk to Team`
       }
     }
   );
-
+       await saveOrderState(
+  from,
+  "HUMAN_SUPPORT"
+);
   reply =
 `👨‍🍳 Our team has been notified.
 
@@ -1914,6 +1926,40 @@ Please share:
 • Weight / Quantity
 • Delivery or Pickup
 • Required Date`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+      if (
+  userText.startsWith("resume ")
+) {
+
+  const customerPhone =
+    userText
+      .replace("resume ", "")
+      .trim();
+
+  await saveOrderState(
+    customerPhone,
+    ""
+  );
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body:
+`✅ Bot resumed for ${customerPhone}`
       }
     },
     {
