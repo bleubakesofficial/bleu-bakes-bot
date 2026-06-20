@@ -1440,99 +1440,422 @@ Please share:
 • Time
 • Delivery or Pickup
 
-Our team will help create your perfect cake ❤️`;
+Please share the details and we'll get started 😊`;
 }
       if (userText === "bento_cakes") {
 
-reply =
-` 🎁 Select Bento Cake Category
-
-• Classic
-• Chocolate
-• Premium
-
-Our team will help create your perfect Bento Cake ❤️`;
-}
-      if (userText === "cakes") {
-        await axios.post(
-`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-{
-  messaging_product: "whatsapp",
-  to: from,
-  type: "interactive",
-  interactive: {
-    type: "list",
-    body: {
-      text: "🎂 Select Cake Category"
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🎁 Select Bento Cake Category"
+        },
+        action: {
+          button: "View Bento Cakes",
+          sections: [{
+            title: "Bento Categories",
+            rows: [
+              {
+                id: "bento_classic",
+                title: "Classic Bento"
+              },
+              {
+                id: "bento_chocolate",
+                title: "Chocolate Bento"
+              },
+              {
+                id: "bento_premium",
+                title: "Premium Bento"
+              }
+            ]
+          }]
+        }
+      }
     },
-    action: {
-      button: "View Cakes",
-      sections: [{
-        title: "Cake Categories",
-        rows: [
-          {
-            id: "classic_cakes",
-            title: "Classic Cakes"
-          },
-          {
-            id: "chocolate_cakes",
-            title: "Chocolate Cakes"
-          },
-          {
-            id: "premium_cakes",
-            title: "Premium Cakes"
-          },
-          {
-            id: "fruit_cakes",
-            title: "Fruit Cakes"
-          }
-        ]
-      }]
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
     }
-  }
-},
-{
-  headers: {
-    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-    "Content-Type": "application/json"
-  }
-}
-);
+  );
 
-return res.sendStatus(200);
-   } 
+  return res.sendStatus(200);
+}
       if (userText === "classic_cakes") {
-await axios.post(...list of flavours...)
-return res.sendStatus(200);
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "list",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🎂 Select Classic Cake Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Classic Cakes",
+            rows: [
+              { id: "chocolate_vanilla", title: "Chocolate Vanilla" },
+              { id: "vanilla", title: "Vanilla" },
+              { id: "butter_scotch_caramel", title: "Butter Scotch Caramel" },
+              { id: "red_velvet", title: "Red Velvet" },
+              { id: "white_forest", title: "White Forest" }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
 }
 
 if (userText === "chocolate_cakes") {
- await axios.post(...list of flavours...)
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "list",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🍫 Select Chocolate Cake Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Chocolate Cakes",
+            rows: [
+              { id: "chocolate_truffle", title: "Chocolate Truffle" },
+              { id: "chocochip", title: "Chocochip" },
+              { id: "chocolate_mousse", title: "Chocolate Mousse" },
+              { id: "oreo", title: "Oreo" },
+              { id: "kitkat", title: "KitKat" },
+              { id: "dairy_milk", title: "Dairy Milk" }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
   return res.sendStatus(200);
 }
-
 if (userText === "premium_cakes") {
- await axios.post(...list of flavours...)
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "list",
+      interactive: {
+        type: "list",
+        body: {
+          text: "👑 Select Premium Cake Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Premium Cakes",
+            
+            sections: [
+{
+  title: "Premium Cakes 1",
+  rows: [
+    {
+      id: "belgian_chocolate",
+      title: "Belgian Chocolate"
+    },
+    {
+      id: "rasmalai",
+      title: "Rasmalai"
+    },
+    {
+      id: "rose_pista",
+      title: "Rose Pista"
+    },
+    {
+      id: "hazelnut_rocher",
+      title: "Hazelnut Rocher"
+    },
+    {
+      id: "tiramisu",
+      title: "Tiramisu"
+    },
+    {
+      id: "roll_up_chocolate",
+      title: "Roll Up Chocolate"
+    }
+  ]
+},
+{
+  title: "Premium Cakes 2",
+  rows: [
+    {
+      id: "red_velvet_choco_truffle",
+      title: "Red Velvet Choco"
+    },
+    {
+      id: "rich_butterscotch_crunch",
+      title: "Rich Butterscotch"
+    },
+    {
+      id: "heart_shaped_red_velvet",
+      title: "Heart Red Velvet"
+    },
+    {
+      id: "chocolate_truffle_bomb",
+      title: "Truffle Bomb"
+    }
+  ]
+}
+]
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
   return res.sendStatus(200);
 }
-
 if (userText === "fruit_cakes") {
-await axios.post(...list of flavours...)
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "list",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🍓 Select Fruit Cake Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Fruit Cakes",
+            rows: [
+              { id: "fresh_fruit", title: "Fresh Fruit" },
+              { id: "blueberry_fruit", title: "Blueberry" },
+              { id: "pineapple_fruit", title: "Pineapple" }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
   return res.sendStatus(200);
 }
       if (userText === "bento_classic") {
-  await axios.post(...list of classic bento flavours...)
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🎁 Select Classic Bento Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Classic Bento Cakes",
+            rows: [
+              { id: "bento_butterscotch", title: "Butterscotch" },
+              { id: "bento_pineapple", title: "Pineapple" },
+              { id: "bento_red_velvet", title: "Red Velvet" },
+              { id: "bento_fresh_fruit", title: "Fresh Fruit" },
+              { id: "bento_chocolate_truffle", title: "Chocolate Truffle" },
+              { id: "bento_chocolate_vanilla", title: "Chocolate Vanilla" }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
   return res.sendStatus(200);
 }
 
 if (userText === "bento_chocolate") {
-  await axios.post(...list of chocolate bento flavours...)
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🍫 Select Chocolate Bento Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Chocolate Bento Cakes",
+            rows: [
+              { id: "bento_chocochip", title: "Chocochip" },
+              { id: "bento_oreo", title: "Oreo" },
+              { id: "bento_kitkat", title: "KitKat" },
+              { id: "bento_dairymilk", title: "Dairy Milk" }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
   return res.sendStatus(200);
 }
-
 if (userText === "bento_premium") {
-  await axios.post(...list of premium bento flavours...)
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "👑 Select Premium Bento Flavour"
+        },
+        action: {
+          button: "View Flavours",
+          sections: [{
+            title: "Premium Bento Cakes",
+            rows: [
+              { id: "bento_love_pearl", title: "Love & Pearl" },
+              { id: "bento_chocolate_mocha", title: "Chocolate Mocha" },
+              { id: "bento_lotus_biscoff", title: "Lotus Biscoff" },
+              { id: "bento_belgian_chocolate", title: "Belgian Chocolate" }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
   return res.sendStatus(200);
+}
+      const flavourMap = {
+  chocolate_vanilla: "Chocolate Vanilla",
+  vanilla: "Vanilla",
+  butter_scotch_caramel: "Butter Scotch Caramel",
+  red_velvet: "Red Velvet",
+  white_forest: "White Forest",
+
+  chocolate_truffle: "Chocolate Truffle",
+  chocochip: "Chocochip",
+  chocolate_mousse: "Chocolate Mousse",
+  oreo: "Oreo",
+  kitkat: "KitKat",
+  dairy_milk: "Dairy Milk",
+
+  belgian_chocolate: "Belgian Chocolate",
+  rasmalai: "Rasmalai",
+  rose_pista: "Rose Pista",
+  hazelnut_rocher: "Hazelnut Rocher",
+  tiramisu: "Tiramisu",
+  lotus_biscoff: "Lotus Biscoff",
+
+  fresh_fruit: "Fresh Fruit",
+  blueberry_fruit: "Blueberry",
+  pineapple_fruit: "Pineapple",
+
+  bento_butterscotch: "Butterscotch",
+  bento_pineapple: "Pineapple",
+  bento_red_velvet: "Red Velvet",
+  bento_fresh_fruit: "Fresh Fruit",
+  bento_chocolate_truffle: "Chocolate Truffle",
+  bento_chocolate_vanilla: "Chocolate Vanilla",
+
+  bento_chocochip: "Chocochip",
+  bento_oreo: "Oreo",
+  bento_kitkat: "KitKat",
+  bento_dairymilk: "Dairy Milk",
+
+  bento_love_pearl: "Love & Pearl",
+  bento_chocolate_mocha: "Chocolate Mocha",
+  bento_lotus_biscoff: "Lotus Biscoff",
+  bento_belgian_chocolate: "Belgian Chocolate"
+};
+
+if (flavourMap[userText]) {
+
+reply =
+`🎂 Selected Flavour:
+
+${flavourMap[userText]}
+
+Please tell us:
+
+• Weight / Quantity
+• Delivery or Pickup
+• Required Date`;
+
 }
       const aiResponse =
   await generateReply(
