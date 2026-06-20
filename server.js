@@ -407,13 +407,15 @@ then return:
   "create_order": true
 }
 
-If customer wants to talk to a person, immediately reply:
+If customer explicitly asks:
+"talk to human"
+"talk to team"
+"call me"
+"human support"
 
-"Our team will be happy to assist you.
+Then reply:
 
-📞 Call/WhatsApp: +91XXXXXXXXXX
-
-You can call us directly for immediate assistance during working hours."
+"Please select Talk to Team from the menu."
 
 If customer is confirming an order,
 return JSON in this format:
@@ -1583,58 +1585,61 @@ if (userText === "premium_cakes") {
           sections: [{
             title: "Premium Cakes",
             
-            sections: [
-{
-  title: "Premium Cakes 1",
-  rows: [
+           action: {
+  button: "View Flavours",
+  sections: [
     {
-      id: "belgian_chocolate",
-      title: "Belgian Chocolate"
+      title: "Premium Cakes 1",
+      rows: [
+        {
+          id: "belgian_chocolate",
+          title: "Belgian Chocolate"
+        },
+        {
+          id: "rasmalai",
+          title: "Rasmalai"
+        },
+        {
+          id: "rose_pista",
+          title: "Rose Pista"
+        },
+        {
+          id: "hazelnut_rocher",
+          title: "Hazelnut Rocher"
+        },
+        {
+          id: "tiramisu",
+          title: "Tiramisu"
+        },
+        {
+          id: "roll_up_chocolate",
+          title: "Roll Up Chocolate"
+        }
+      ]
     },
     {
-      id: "rasmalai",
-      title: "Rasmalai"
-    },
-    {
-      id: "rose_pista",
-      title: "Rose Pista"
-    },
-    {
-      id: "hazelnut_rocher",
-      title: "Hazelnut Rocher"
-    },
-    {
-      id: "tiramisu",
-      title: "Tiramisu"
-    },
-    {
-      id: "roll_up_chocolate",
-      title: "Roll Up Chocolate"
-    }
-  ]
-},
-{
-  title: "Premium Cakes 2",
-  rows: [
-    {
-      id: "red_velvet_choco_truffle",
-      title: "Red Velvet Choco"
-    },
-    {
-      id: "rich_butterscotch_crunch",
-      title: "Rich Butterscotch"
-    },
-    {
-      id: "heart_shaped_red_velvet",
-      title: "Heart Red Velvet"
-    },
-    {
-      id: "chocolate_truffle_bomb",
-      title: "Truffle Bomb"
+      title: "Premium Cakes 2",
+      rows: [
+        {
+          id: "red_velvet_choco_truffle",
+          title: "Red Velvet Choco"
+        },
+        {
+          id: "rich_butterscotch_crunch",
+          title: "Rich Butterscotch"
+        },
+        {
+          id: "heart_shaped_red_velvet",
+          title: "Heart Red Velvet"
+        },
+        {
+          id: "chocolate_truffle_bomb",
+          title: "Truffle Bomb"
+        }
+      ]
     }
   ]
 }
-]
             ]
           }]
         }
@@ -1821,6 +1826,12 @@ if (userText === "bento_premium") {
   tiramisu: "Tiramisu",
   lotus_biscoff: "Lotus Biscoff",
 
+  roll_up_chocolate: "Roll Up Chocolate",
+  red_velvet_choco_truffle: "Red Velvet Choco Truffle",
+  rich_butterscotch_crunch: "Rich Butterscotch Crunch",
+  heart_shaped_red_velvet: "Heart Shaped Red Velvet",
+  chocolate_truffle_bomb: "Chocolate Truffle Bomb",
+
   fresh_fruit: "Fresh Fruit",
   blueberry_fruit: "Blueberry",
   pineapple_fruit: "Pineapple",
@@ -1845,18 +1856,33 @@ if (userText === "bento_premium") {
 
 if (flavourMap[userText]) {
 
-reply =
-`🎂 Selected Flavour:
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body:
+`🎂 Selected Flavour: ${flavourMap[userText]}
 
-${flavourMap[userText]}
-
-Please tell us:
+Please share:
 
 • Weight / Quantity
 • Delivery or Pickup
-• Required Date`;
+• Required Date`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
 
+  return res.sendStatus(200);
 }
+      
       const aiResponse =
   await generateReply(
     from,
