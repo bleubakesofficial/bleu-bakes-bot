@@ -507,9 +507,11 @@ app.post("/webhook", async (req, res) => {
   await getOrderState(from);
 
 if (
-  currentState === "HUMAN_SUPPORT" &&
+  currentState &&
+  currentState.includes("HUMAN_SUPPORT") &&
   from !== ADMIN_PHONE
 ) {
+  console.log("BOT PAUSED FOR:", from);
   return res.sendStatus(200);
 }
     console.log("Webhook hit");
