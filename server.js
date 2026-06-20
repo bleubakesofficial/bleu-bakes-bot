@@ -634,13 +634,11 @@ if (message.interactive?.list_reply) {
   { id: "custom_cake", title: "🎨 Custom Cakes" },
   { id: "cakes", title: "🎂 Cakes" },
   { id: "bento_cakes", title: "🎁 Bento Cakes" },
-  { id: "pastries", title: "🍰 Pastries" },
-  { id: "cupcakes", title: "🧁 Cupcakes" },
+  { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
   { id: "desserts", title: "🍮 Desserts" },
-  { id: "pizza", title: "🍕 Pizza" },
-  { id: "pasta", title: "🍝 Pasta & Garlic Bread" },
+  { id: "pizza_pasta", title: "🍕 Pizza, Pasta & Garlic Bread" },
   { id: "snacks", title: "🍟 Snacks" },
   { id: "beverages", title: "🥤 Beverages" }
 ]
