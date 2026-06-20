@@ -9,7 +9,7 @@ app.use(express.json());
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
-const ADMIN_PHONE = "919310842304";
+const ADMIN_PHONE = process.env.ADMIN_PHONE;
 const ORDER_STATE_SHEET_ID = process.env.ORDER_STATE_SHEET_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
