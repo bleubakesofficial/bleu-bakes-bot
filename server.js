@@ -1444,6 +1444,56 @@ Please share:
 
 Please share the details and we'll get started 😊`;
 }
+      if (userText === "cakes") {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: {
+          text: "🎂 Select Cake Category"
+        },
+        action: {
+          button: "View Cakes",
+          sections: [{
+            title: "Cake Categories",
+            rows: [
+              {
+                id: "classic_cakes",
+                title: "Classic Cakes"
+              },
+              {
+                id: "chocolate_cakes",
+                title: "Chocolate Cakes"
+              },
+              {
+                id: "premium_cakes",
+                title: "Premium Cakes"
+              },
+              {
+                id: "fruit_cakes",
+                title: "Fruit Cakes"
+              }
+            ]
+          }]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
+     
       if (userText === "bento_cakes") {
 
   await axios.post(
@@ -1486,9 +1536,9 @@ Please share the details and we'll get started 😊`;
       }
     }
   );
-
   return res.sendStatus(200);
 }
+      
       if (userText === "classic_cakes") {
 
   await axios.post(
@@ -1496,7 +1546,7 @@ Please share the details and we'll get started 😊`;
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "list",
+      type: "interative",
       interactive: {
         type: "list",
         body: {
@@ -1535,7 +1585,7 @@ if (userText === "chocolate_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "list",
+      type: "interative",
       interactive: {
         type: "list",
         body: {
@@ -1574,7 +1624,7 @@ if (userText === "premium_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "list",
+      type: "interative",
       interactive: {
         type: "list",
         body: {
@@ -1656,7 +1706,7 @@ if (userText === "fruit_cakes") {
     {
       messaging_product: "whatsapp",
       to: from,
-      type: "list",
+      type: "interative",
       interactive: {
         type: "list",
         body: {
