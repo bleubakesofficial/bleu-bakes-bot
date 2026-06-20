@@ -308,14 +308,14 @@ RULES:
 
 Instead show categories:
 
+🎨 Custom Cakes
 🎂 Cakes
-🍰 Pastries
-🧁 Cupcakes
+🎁 Bento Cakes
+🍰 Pastries & Cupcakes
 🫙 Jar Cakes
 🍫 Brownies
 🍮 Desserts
-🍕 Pizza
-🍝 Pasta & Garlic Bread
+🍕 Pizza & Pasta 🍝
 🍟 Snacks
 🥤 Beverages
 
@@ -638,7 +638,7 @@ if (message.interactive?.list_reply) {
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
   { id: "desserts", title: "🍮 Desserts" },
-  { id: "pizza_pasta", title: "🍕 Pizza, Pasta & Garlic Bread" },
+  { id: "pizza_pasta", title: "🍕 Pizza & Pasta 🍝" },
   { id: "snacks", title: "🍟 Snacks" },
   { id: "beverages", title: "🥤 Beverages" }
 ]
