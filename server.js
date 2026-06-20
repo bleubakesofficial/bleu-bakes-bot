@@ -328,9 +328,9 @@ CUSTOM CAKE FLOW:
 Collect only missing details:
 
 • Theme
-• Reference Image (optional)
-• Weight
 • Flavour
+• Weight
+• Reference Image (optional)
 • Date
 • Time
 • Delivery or Pickup
@@ -631,17 +631,19 @@ if (message.interactive?.list_reply) {
             {
               title: "Menu Categories",
               rows: [
-                { id: "cakes", title: "🎂 Cakes" },
-                { id: "pastries", title: "🍰 Pastries" },
-                { id: "cupcakes", title: "🧁 Cupcakes" },
-                { id: "jar_cakes", title: "🫙 Jar Cakes" },
-                { id: "brownies", title: "🍫 Brownies" },
-                { id: "desserts", title: "🍮 Desserts" },
-                { id: "pizza", title: "🍕 Pizza" },
-                { id: "pasta", title: "🍝 Pasta & Garlic Bread" },
-                { id: "snacks", title: "🍟 Snacks" },
-                { id: "beverages", title: "🥤 Beverages" }
-              ]
+  { id: "custom_cake", title: "🎨 Custom Cakes" },
+  { id: "cakes", title: "🎂 Cakes" },
+  { id: "bento_cakes", title: "🎁 Bento Cakes" },
+  { id: "pastries", title: "🍰 Pastries" },
+  { id: "cupcakes", title: "🧁 Cupcakes" },
+  { id: "jar_cakes", title: "🫙 Jar Cakes" },
+  { id: "brownies", title: "🍫 Brownies" },
+  { id: "desserts", title: "🍮 Desserts" },
+  { id: "pizza", title: "🍕 Pizza" },
+  { id: "pasta", title: "🍝 Pasta & Garlic Bread" },
+  { id: "snacks", title: "🍟 Snacks" },
+  { id: "beverages", title: "🥤 Beverages" }
+]
             }
           ]
         }
@@ -656,6 +658,7 @@ if (message.interactive?.list_reply) {
   );
 return res.sendStatus(200);
  }
+      
       if (userText === "existing_order") {
 
   await axios.post(
@@ -1424,6 +1427,80 @@ Thank you for choosing Bleu Bakes ❤️`
 
   return;
 }
+      if (userText === "custom_cake") {
+
+reply =
+`🎂 Custom Cakes
+
+Please share:
+
+• Theme / Design
+• Flavour
+• Weight Required
+• Delivery / Pickup Date
+• Reference Image (if available)
+
+Our team will help create your perfect cake ❤️`;
+}
+      if (userText === "bento_cakes") {
+
+reply =
+` 🎁 Select Bento Cake Category
+
+• Classic
+• Chocolate
+• Premium
+
+Our team will help create your perfect Bento Cake ❤️`;
+}
+      if (userText === "cakes") {
+        await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  type: "interactive",
+  interactive: {
+    type: "list",
+    body: {
+      text: "🎂 Select Cake Category"
+    },
+    action: {
+      button: "View Cakes",
+      sections: [{
+        title: "Cake Categories",
+        rows: [
+          {
+            id: "classic_cakes",
+            title: "Classic Cakes"
+          },
+          {
+            id: "chocolate_cakes",
+            title: "Chocolate Cakes"
+          },
+          {
+            id: "premium_cakes",
+            title: "Premium Cakes"
+          },
+          {
+            id: "fruit_cakes",
+            title: "Fruit Cakes"
+          }
+        ]
+      }]
+    }
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
+   }     
       const aiResponse =
   await generateReply(
     from,
