@@ -609,8 +609,8 @@ if (message.interactive?.list_reply) {
     message.interactive.list_reply.id;
 }
 
-    if (isAfterHours && !customerNotifiedAfterHours) {
-
+if (isAfterHours) {
+  
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -730,6 +730,9 @@ We will review everything and get back to you during working hours (10 AM – 10
        return res.sendStatus(200);
      }
  if (userText === "new_order") {
+
+   await saveOrderState(from, "");
+delete selectedFlavours[from];
 
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
@@ -1517,22 +1520,54 @@ Thank you for choosing Bleu Bakes ❤️`
 
   return;
 }
-      if (
+if (
   userText.startsWith("feedback ")
-) {
-
+)
+{
   const customerPhone =
-    userText
-      .replace("feedback ", "")
-      .trim();
+    userText.replace("feedback ", "").trim();
 
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
       messaging_product: "whatsapp",
       to: customerPhone,
-      text: {
-        body: "send_feedback"
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: {
+          text:
+`⭐⭐⭐⭐⭐
+
+Thank you for choosing Bleu Bakes!
+
+How was your experience?`
+        },
+        action: {
+          buttons: [
+            {
+              type: "reply",
+              reply: {
+                id: "loved_it",
+                title: "😍 Loved It"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "good",
+                title: "🙂 Good"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "could_be_better",
+                title: "😕 Could Be Better"
+              }
+            }
+          ]
+        }
       }
     },
     {
@@ -1543,12 +1578,12 @@ Thank you for choosing Bleu Bakes ❤️`
     }
   );
 
-  reply =
-`✅ Feedback request sent to ${customerPhone}`;
-
-  return;
+  return res.sendStatus(200);
 }
       if (userText === "custom_cake") {
+
+await saveOrderState(from, "");
+delete selectedFlavours[from];
 
 reply =
 `🎂 Custom Cakes
