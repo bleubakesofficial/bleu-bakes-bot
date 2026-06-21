@@ -1792,47 +1792,10 @@ Thank you for choosing Bleu Bakes ❤️`
 
   return res.sendStatus(200);
 }
-
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: ADMIN_PHONE,
-      text: {
-        body:
-`🔔 Bleu Bakes Support Alert
-
-Customer needs assistance.
-
-📱 Phone:
-${from}
-
-💬 Message:
-Talk to Team`
-      }
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
-      }
-    }
-  );
-       await saveOrderState(
-  from,
-  "HUMAN_SUPPORT"
-);
-  reply =
-`📞 Need assistance?
-
-Our team has been notified and will contact you shortly.
-
-For urgent support:
-
-📱 +91 YOUR NUMBER
-
-Thank you for choosing Bleu Bakes ❤️`;
-
+  if (
+  userText === "talk_team" ||
+  userText?.toLowerCase() === "talk to team"
+)
       if (userText === "1") {
 
   reply =
