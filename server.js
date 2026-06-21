@@ -2559,7 +2559,65 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 );
 
 return res.sendStatus(200);
-}   
+} 
+  if (
+  userText &&
+  ["hi","hello","hey","start","menu"].includes(
+    userText.toLowerCase().trim()
+  )
+) {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: {
+          text:
+`👋 Welcome to Bleu Bakes!
+
+How may we assist you today?`
+        },
+        action: {
+          buttons: [
+            {
+              type: "reply",
+              reply: {
+                id: "orders_queries",
+                title: "🛒 Orders"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "events",
+                title: "🎪 Events"
+              }
+            },
+            {
+              type: "reply",
+              reply: {
+                id: "more_menu",
+                title: "⚙️ More Menu"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  return res.sendStatus(200);
+}
       const aiResponse =
   await generateReply(
     from,
