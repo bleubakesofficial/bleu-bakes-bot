@@ -556,6 +556,19 @@ try {
 }
 
 app.post("/webhook", async (req, res) => {
+
+  const now = new Date();
+
+const indiaHour = Number(
+  now.toLocaleString("en-US", {
+    timeZone: "Asia/Kolkata",
+    hour: "numeric",
+    hour12: false
+  })
+);
+
+const isAfterHours =
+  indiaHour < 10 || indiaHour >= 22;
   
   try {
     const message =
@@ -595,6 +608,34 @@ if (message.interactive?.list_reply) {
   userText =
     message.interactive.list_reply.id;
 }
+
+    if (isAfterHours && !customerNotifiedAfterHours) {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body:
+`🌙 Thanks for reaching out to Bleu Bakes!
+
+Our team is currently offline.
+
+You can still place your order and share all details.
+
+We will review everything and get back to you during working hours (10 AM – 10 PM). 😊`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+}
+    
     let reply = "";
 
     if (isGreeting(userText)) {
