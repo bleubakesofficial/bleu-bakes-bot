@@ -347,27 +347,46 @@ Pricing:
 • Use Bento pricing for 300g custom cakes
 • Use Cake pricing for 500g and above
 
-Custom design surcharge:
+CUSTOM CAKE PRICING RULES:
 
-+₹250
+• Minimum custom cake weight: 300g
+• Maximum custom cake weight: Any weight
 
-Add ₹250 to every custom cake order regardless of weight.
+• For 300g custom cakes use Bento pricing.
+• For 500g and above use Cake pricing.
 
-Examples:
+Every custom cake includes a mandatory ₹250 customisation charge.
 
-500g Chocolate Truffle Cake = ₹500
+Internally add ₹250 to the final cake price.
 
-Custom Chocolate Truffle Cake
-= ₹500 + ₹250
-= ₹750
+Required Time is mandatory.
 
-300g Belgian Chocolate Bento = ₹350
+Accept:
+• Specific times (5 PM, 6:30 PM, 11 AM)
+• Time periods (Morning, Afternoon, Evening, Night)
 
-Custom Belgian Chocolate 300g
-= ₹350 + ₹250
-= ₹600
+Do not display these examples unless customer specifically asks.
 
-Always calculate custom cake pricing this way.
+IMPORTANT:
+
+Never show:
+• ₹250 charge
+• surcharge
+• customisation fee
+• calculations
+• price breakdown
+
+Only show the final payable amount.
+
+Examples for internal understanding only:
+
+500g Chocolate Truffle Cake ₹500
+Custom version final price ₹750
+
+300g Belgian Chocolate Bento ₹350
+Custom version final price ₹600
+
+Do NOT reveal these calculations to customers.
 
 Collect only missing details:
 
@@ -1970,7 +1989,7 @@ if (flavourMap[userText]) {
       messaging_product: "whatsapp",
       to: from,
       text: {
-        body:
+       body:
 `🎂 Selected Flavour: ${flavourMap[userText]}
 
 Please share:
@@ -1978,14 +1997,7 @@ Please share:
 • Weight / Quantity
 • Delivery or Pickup
 • Required Date
-• Required Time
-
-Examples:
-5 PM
-6:30 PM
-Morning
-Evening
-Night`
+• Required Time`
       }
     },
     {
