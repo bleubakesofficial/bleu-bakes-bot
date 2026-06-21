@@ -797,25 +797,21 @@ return res.sendStatus(200);
               title: "Order Support",
               rows: [
                 {
-                  id: "order_update",
-                  title: "Order Updates"
-                },
-                {
-                  id: "modify_order",
-                  title: "Modify Existing Order"
-                },
-                {
-                  id: "zomato_issue",
-                  title: "Zomato Order Issue"
-                },
-                {
-                  id: "refund",
-                  title: "Refund / Cancellation"
-                },
-                {
-                  id: "talk_team",
-                  title: "Talk to Team"
-                }
+  id: "order_update",
+  title: "📦 Order Updates"
+},
+{
+  id: "modify_order",
+  title: "✏️ Modify Existing Order"
+},
+{
+  id: "order_issue",
+  title: "⚠️ Order Issues"
+},
+{
+  id: "refund",
+  title: "💰 Refund / Cancellation"
+}
               ]
             }
           ]
@@ -832,39 +828,178 @@ return res.sendStatus(200);
 return res.sendStatus(200);
       }
       if (userText === "order_update") {
-reply =
-`📦 Please share:
 
-• Customer Name
-• Mobile Number
-• Order Date
-
-Our team will provide an update on your order shortly.`;
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+type: "button",
+interactive: {
+type: "button",
+body: {
+text: "📦 Order Updates\n\nPlease select:"
+},
+action: {
+buttons: [
+{
+type: "reply",
+reply: {
+id: "update_whatsapp",
+title: "WhatsApp Order"
 }
-      if (userText === "modify_order") {
-reply =
-`✏️ Please share:
-
-• Order Number (if available)
-• Changes required
-
-Our team will review the request and assist you.`;
+},
+{
+type: "reply",
+reply: {
+id: "update_zomato",
+title: "Zomato Order"
 }
-      if (userText === "zomato_issue") {
-reply =
-`🍽️ Please share your Zomato order details and issue.
+}
+]
+}
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
 
-Our team will try to assist, although order resolutions are subject to Zomato policies.`;
+return res.sendStatus(200);
+}
+     if (userText === "modify_order") {
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+type: "button",
+interactive: {
+type: "button",
+body: {
+text: "✏️ Modify Order\n\nPlease select:"
+},
+action: {
+buttons: [
+{
+type: "reply",
+reply: {
+id: "modify_whatsapp",
+title: "WhatsApp Order"
+}
+},
+{
+type: "reply",
+reply: {
+id: "modify_zomato",
+title: "Zomato Order"
+}
+}
+]
+}
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+return res.sendStatus(200);
+}
+      if (userText === "order_issue") {
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+type: "interactive",
+interactive: {
+type: "button",
+body: {
+text: "⚠️ Order Issue\n\nPlease select:"
+},
+action: {
+buttons: [
+{
+type: "reply",
+reply: {
+id: "issue_whatsapp",
+title: "WhatsApp Order"
+}
+},
+{
+type: "reply",
+reply: {
+id: "issue_zomato",
+title: "Zomato Order"
+}
+}
+]
+}
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+return res.sendStatus(200);
 }
       if (userText === "refund") {
-reply =
-`📋 Please share:
 
-• Order Number
-• Reason for cancellation/refund request
-
-Our team will review and contact you shortly.`;
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+type: "button",
+interactive: {
+type: "button",
+body: {
+text: "💰 Refund / Cancellation\n\nPlease select:"
+},
+action: {
+buttons: [
+{
+type: "reply",
+reply: {
+id: "refund_whatsapp",
+title: "WhatsApp Order"
 }
+},
+{
+type: "reply",
+reply: {
+id: "refund_zomato",
+title: "Zomato Order"
+}
+}
+]
+}
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+return res.sendStatus(200);
+}
+      
       if (userText === "more_menu") {
 
   await axios.post(
@@ -918,6 +1053,7 @@ Please choose an option:`
 
   return res.sendStatus(200);
 }
+
       if (userText === "back_main") {
 
   await axios.post(
@@ -1327,9 +1463,85 @@ Please tell us what went wrong so we can improve.`;
 
   return res.sendStatus(200);
 }
-      
-     if (
-  userText === "talk_team" ||
+    if (userText === "update_whatsapp") {
+reply =
+`📦 Please share:
+
+• Name
+• Mobile Number
+• Order Date
+• Order Number`;
+}
+
+if (userText === "update_zomato") {
+reply =
+`📦 Please share:
+
+• Name
+• Mobile Number
+• Zomato Order ID
+• Order Date`;
+}
+
+if (userText === "modify_whatsapp") {
+reply =
+`✏️ Please share:
+
+• Name
+• Mobile Number
+• Order Number
+• Changes Required`;
+}
+
+if (userText === "modify_zomato") {
+reply =
+`✏️ Please share:
+
+• Name
+• Mobile Number
+• Zomato Order ID
+• Changes Required`;
+}
+
+if (userText === "refund_whatsapp") {
+reply =
+`💰 Please share:
+
+• Name
+• Mobile Number
+• Order Number
+• Reason for Refund/Cancellation`;
+}
+
+if (userText === "refund_zomato") {
+reply =
+`💰 Please share:
+
+• Name
+• Mobile Number
+• Zomato Order ID
+• Reason for Refund/Cancellation`;
+}
+      if (userText === "issue_whatsapp") {
+reply =
+`⚠️ Please share:
+
+• Name
+• Mobile Number
+• Order Number
+• Issue Details`;
+}
+
+if (userText === "issue_zomato") {
+reply =
+`⚠️ Please share:
+
+• Name
+• Mobile Number
+• Zomato Order ID
+• Issue Details`;
+}
+     if (userText === "talk_team" ||
   userText.toLowerCase() === "talk to team"
 ) {
 
