@@ -14,7 +14,7 @@ const ORDER_STATE_SHEET_ID = process.env.ORDER_STATE_SHEET_ID;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
 const FEEDBACK_SHEET_ID = process.env.FEEDBACK_SHEET_ID;
-
+const selectedFlavours = {};
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const auth = new google.auth.GoogleAuth({
@@ -228,6 +228,9 @@ const currentDateTime =
     }
   );
   
+ const rememberedFlavour =
+  selectedFlavours[phone] || "";
+  
   const prompt = `
 You are Bleu Bakes' senior bakery sales executive on WhatsApp.
 
@@ -235,6 +238,8 @@ CURRENT DATE & TIME:
 ${currentDateTime}
 CURRENT ORDER STATE:
 ${orderState}
+SELECTED FLAVOUR:
+${rememberedFlavour}
 
 MENU:
 ${menuText}
@@ -274,6 +279,13 @@ Examples:
 Never erase previously collected information.
 
 Always keep all confirmed details in orderState and append new information.
+
+If SELECTED FLAVOUR is not empty,
+the customer has already chosen a flavour.
+
+Never ask flavour again.
+
+Use that flavour in the final order.
 
 Example:
 
@@ -324,6 +336,38 @@ Then ask:
 "Which category would you like to explore?"
 
 CUSTOM CAKE FLOW:
+
+CUSTOM CAKE RULES:
+
+• Minimum weight: 300g
+• Maximum weight: Any weight
+
+Pricing:
+
+• Use Bento pricing for 300g custom cakes
+• Use Cake pricing for 500g and above
+
+Custom design surcharge:
+
++₹250
+
+Add ₹250 to every custom cake order regardless of weight.
+
+Examples:
+
+500g Chocolate Truffle Cake = ₹500
+
+Custom Chocolate Truffle Cake
+= ₹500 + ₹250
+= ₹750
+
+300g Belgian Chocolate Bento = ₹350
+
+Custom Belgian Chocolate 300g
+= ₹350 + ₹250
+= ₹600
+
+Always calculate custom cake pricing this way.
 
 Collect only missing details:
 
@@ -1917,6 +1961,9 @@ if (userText === "bento_premium") {
 
 if (flavourMap[userText]) {
 
+  selectedFlavours[from] =
+  flavourMap[userText];
+  
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1930,7 +1977,15 @@ Please share:
 
 • Weight / Quantity
 • Delivery or Pickup
-• Required Date`
+• Required Date
+• Required Time
+
+Examples:
+5 PM
+6:30 PM
+Morning
+Evening
+Night`
       }
     },
     {
@@ -2014,6 +2069,7 @@ await saveOrderState(
   from,
   ""
 );
+  delete selectedFlavours[from];
   await axios.post(
   `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
   {
