@@ -2014,6 +2014,39 @@ await saveOrderState(
   from,
   ""
 );
+  await axios.post(
+  `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+  {
+    messaging_product: "whatsapp",
+    to: ADMIN_PHONE,
+    text: {
+      body:
+`🎉 NEW ORDER RECEIVED
+
+📱 Customer: ${from}
+
+🍰 Item: ${aiResponse.items || "-"}
+🎂 Flavour: ${aiResponse.flavour || "-"}
+⚖️ Weight: ${aiResponse.weight || "-"}
+
+📅 Date: ${aiResponse.date || "-"}
+🕒 Time: ${aiResponse.time || "-"}
+
+🚚 Delivery: ${aiResponse.deliveryType || "-"}
+
+📍 Address:
+${aiResponse.address || "-"}
+
+Please check Orders Sheet.`
+    }
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+      "Content-Type": "application/json"
+    }
+  }
+);
   reply =
 `${aiResponse.reply ||
 
