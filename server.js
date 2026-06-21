@@ -1282,7 +1282,7 @@ This helps us understand where our customers discover Bleu Bakes.`;
                 {
                   id: "collaboration",
                   title: "Collaboration"
-                }
+                },
                 {
                   id: "other_event",
                   title: "Other Requirement"
