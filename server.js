@@ -788,7 +788,7 @@ await axios.post(
 {
 messaging_product: "whatsapp",
 to: from,
-type: "button",
+type: "interactive",
 interactive: {
 type: "button",
 body: {
@@ -831,7 +831,7 @@ await axios.post(
 {
 messaging_product: "whatsapp",
 to: from,
-type: "button",
+type: "interactive",
 interactive: {
 type: "button",
 body: {
@@ -917,7 +917,7 @@ await axios.post(
 {
 messaging_product: "whatsapp",
 to: from,
-type: "button",
+type: "interactive",
 interactive: {
 type: "button",
 body: {
