@@ -580,6 +580,7 @@ const isAfterHours =
     }
 
     const from = message.from;
+    let reply = "";
     const currentState =
   await getOrderState(from);
     
@@ -1261,20 +1262,35 @@ return res.sendStatus(200);
     `EVENT_LEAD|${userText}`
   );
 
-  reply =
-`🎪 Thank you for your interest in Bleu Bakes.
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body:
+`🎪 Let's plan something sweet!
 
-Please share:
+Please share the following details:
 
-• Name
-• Mobile Number
-• Event Date
-• Expected Guests / Quantity
-• Location
-• Any Special Requirements
+👤 Name:
+📞 Mobile Number:
+📅 Date & Location:
+🧁 Expected Guests / Quantity:
+📝 Any Special Requirements:
 
-Our team will review your requirement and contact you shortly.`;
+Our team will review your requirement and contact you shortly.`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
 
+  return res.sendStatus(200);
 }
   
       if (userText === "google_review") {
@@ -2582,9 +2598,9 @@ ${userText}`
         body:
 `✅ Thank you.
 
-Your enquiry has been forwarded to our events team.
+Your event enquiry has been received and forwarded to our team.
 
-We will contact you shortly.`
+A member of our team will contact you shortly. 🎪`
       }
     },
     {
