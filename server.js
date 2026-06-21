@@ -972,29 +972,29 @@ return res.sendStatus(200);
 Please choose an option:`
         },
         action: {
-          buttons: [
-            {
-              type: "reply",
-              reply: {
-                id: "support_menu",
-                title: "💬 Support"
-              }
-            },
-            {
-              type: "reply",
-              reply: {
-                id: "source_menu",
-                title: "📍 Found Us"
-              }
-            },
-            {
-              type: "reply",
-              reply: {
-                id: "back_main",
-                title: "↩️ Back"
-              }
-            }
-          ]
+buttons: [
+{
+  type: "reply",
+  reply: {
+    id: "feedback",
+    title: "⭐ Feedback"
+  }
+},
+{
+  type: "reply",
+  reply: {
+    id: "talk_team",
+    title: "👨‍🍳 Talk Team"
+  }
+},
+{
+  type: "reply",
+  reply: {
+    id: "back_main",
+    title: "↩️ Back"
+  }
+}
+]
         }
       }
     },
@@ -1105,95 +1105,7 @@ How may we assist you today?`
 
   return res.sendStatus(200);
 }
-      if (userText === "source_menu") {
-
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: from,
-      type: "interactive",
-      interactive: {
-    type: "list",
-        body: {
-          text:
-"📍 How did you hear about Bleu Bakes?"
-        },
-        action: {
-          button: "Select Source",
-          sections: [
-            {
-              title: "Choose One",
-              rows: [
-                {
-                  id: "src_instagram",
-                  title: "Instagram"
-                },
-                {
-                  id: "src_google",
-                  title: "Google Maps"
-                },
-                {
-                  id: "src_friend",
-                  title: "Friend / Family"
-                },
-                {
-                  id: "src_zomato",
-                  title: "Zomato"
-                },
-                {
-                  id: "src_other",
-                  title: "Other"
-                }
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
-      }
-    }
-  );
-
-  return res.sendStatus(200);
-}
-      if (
-  userText === "src_instagram" ||
-  userText === "src_google" ||
-  userText === "src_friend" ||
-  userText === "src_zomato" ||
-  userText === "src_other"
-) {
-
-  const sourceMap = {
-    src_instagram: "Instagram",
-    src_google: "Google Maps",
-    src_friend: "Friend / Family",
-    src_zomato: "Zomato",
-    src_other: "Other"
-  };
-
-  await saveFeedback(
-    from,
-    "",
-    sourceMap[userText],
-    ""
-  );
-
-  reply =
-`🎉 Thank you!
-
-We've recorded:
-
-📍 ${sourceMap[userText]}
-
-This helps us understand where our customers discover Bleu Bakes.`;
-
-}
+    
      if (userText === "events") {
 
   await axios.post(
@@ -1373,7 +1285,29 @@ How was your experience?`
     from,
     "Loved It"
   );
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: ADMIN_PHONE,
+text: {
+body:
+`😍 NEW POSITIVE FEEDBACK
 
+Customer:
+${from}
+
+Rating:
+Loved It`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
   reply =
 `😍 Thank you!
 
@@ -1410,7 +1344,29 @@ YOUR_INSTAGRAM_LINK`;
     from,
     "Good"
   );
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: ADMIN_PHONE,
+text: {
+body:
+`🙂 CUSTOMER FEEDBACK
 
+Customer:
+${from}
+
+Rating:
+Good`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
   reply =
 `🙂 Thank you!
 
@@ -1442,6 +1398,31 @@ if (userText === "could_be_better") {
     from,
     "Could Be Better"
   );
+  await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: ADMIN_PHONE,
+text: {
+body:
+`😕 CUSTOMER ISSUE
+
+Customer:
+${from}
+
+Rating:
+Could Be Better
+
+Waiting for customer comments.`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
 
   reply =
 `😕 We're sorry we missed the mark.
@@ -1795,12 +1776,15 @@ Talk to Team`
   "HUMAN_SUPPORT"
 );
   reply =
-`👨‍🍳 Our team has been notified.
+`📞 Need assistance?
 
-We will get back to you shortly.
+Our team has been notified and will contact you shortly.
 
-📞 For urgent assistance:
-+91XXXXXXXXXX`;
+For urgent support:
+
+📱 +91 YOUR NUMBER
+
+Thank you for choosing Bleu Bakes ❤️`;
 }
       if (userText === "1") {
 
@@ -1837,12 +1821,60 @@ if (userText === "4") {
 We'll continue with your order.`;
 
 }
-      if (userText === "feedback") {
-reply =
-`⭐ We'd love your feedback.
+    if (userText === "feedback") {
 
-Please tell us about your experience with Bleu Bakes.`;
-return;
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+type: "interactive",
+interactive: {
+type: "button",
+body: {
+text:
+`⭐⭐⭐⭐⭐
+
+We'd love your feedback!
+
+How was your experience with Bleu Bakes?`
+},
+action: {
+buttons: [
+{
+type: "reply",
+reply: {
+id: "loved_it",
+title: "😍 Loved It"
+}
+},
+{
+type: "reply",
+reply: {
+id: "good",
+title: "🙂 Good"
+}
+},
+{
+type: "reply",
+reply: {
+id: "could_be_better",
+title: "😕 Improve"
+}
+}
+]
+}
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+return res.sendStatus(200);
 }
       if (
   userText.startsWith("ready ")
