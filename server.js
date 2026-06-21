@@ -1832,7 +1832,7 @@ For urgent support:
 📱 +91 YOUR NUMBER
 
 Thank you for choosing Bleu Bakes ❤️`;
-}
+
       if (userText === "1") {
 
   reply =
@@ -1920,7 +1920,6 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 return res.sendStatus(200);
 }
       if (
