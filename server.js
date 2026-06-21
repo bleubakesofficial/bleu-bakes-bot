@@ -15,6 +15,7 @@ const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const ORDERS_SHEET_ID = process.env.ORDERS_SHEET_ID;
 const FEEDBACK_SHEET_ID = process.env.FEEDBACK_SHEET_ID;
 const selectedFlavours = {};
+const afterHoursSent = {};
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const auth = new google.auth.GoogleAuth({
@@ -609,8 +610,11 @@ if (message.interactive?.list_reply) {
     message.interactive.list_reply.id;
 }
 
-if (isAfterHours) {
-  
+if (
+  isAfterHours &&
+  !afterHoursSent[from]
+) {
+
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -634,59 +638,9 @@ We will review everything and get back to you during working hours (10 AM – 10
       }
     }
   );
-}
-    
-    let reply = "";
 
-    if (isGreeting(userText)) {
-
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: from,
-      type: "interactive",
-      interactive: {
-        type: "button",
-        body: {
-          text: "👋 Welcome to Bleu Bakes!\n\nHow may we assist you today?"
-        },
-        action: {
-          buttons: [
-{
-  type: "reply",
-  reply: {
-    id: "orders_queries",
-    title: "🛒 Orders"
-  }
-},
-{
-  type: "reply",
-  reply: {
-    id: "events",
-    title: "🎪 Events"
-  }
-},
-{
-  type: "reply",
-  reply: {
-    id: "more_menu",
-    title: "⚙️ More Menu"
-  }
-}
-]
-        }
-      }
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
-      }
-    }
-  );
- return res.sendStatus(200);
-    } else {
+  afterHoursSent[from] = true;
+} else {
      if (userText === "orders_queries") {
 
   await axios.post(
@@ -1463,83 +1417,299 @@ Please tell us what went wrong so we can improve.`;
 
   return res.sendStatus(200);
 }
-    if (userText === "update_whatsapp") {
+   if (userText === "update_whatsapp") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_UPDATE_WHATSAPP"
+);
+
 reply =
-`📦 Please share:
+`📦 Order Update Request
+
+Please share:
 
 • Name
 • Mobile Number
 • Order Date
 • Order Number`;
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
 }
 
 if (userText === "update_zomato") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_UPDATE_ZOMATO"
+);
+
 reply =
-`📦 Please share:
+`📦 Order Update Request
+
+Please share:
 
 • Name
 • Mobile Number
 • Zomato Order ID
 • Order Date`;
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
 }
 
 if (userText === "modify_whatsapp") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_MODIFY_WHATSAPP"
+);
+
 reply =
-`✏️ Please share:
+`✏️ Modify Order Request
+
+Please share:
 
 • Name
 • Mobile Number
 • Order Number
 • Changes Required`;
-}
 
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
+}
+  
 if (userText === "modify_zomato") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_MODIFY_ZOMATO"
+);
+
 reply =
-`✏️ Please share:
+`✏️ Modify Order Request
+
+Please share:
 
 • Name
 • Mobile Number
 • Zomato Order ID
 • Changes Required`;
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
 }
 
 if (userText === "refund_whatsapp") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_REFUND_WHATSAPP"
+);
+
 reply =
-`💰 Please share:
+`💰 Refund / Cancellation Request
+
+Please share:
 
 • Name
 • Mobile Number
 • Order Number
-• Reason for Refund/Cancellation`;
-}
+• Reason for Refund / Cancellation`;
 
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
+}
+  
 if (userText === "refund_zomato") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_REFUND_ZOMATO"
+);
+
 reply =
-`💰 Please share:
+`💰 Refund / Cancellation Request
+
+Please share:
 
 • Name
 • Mobile Number
 • Zomato Order ID
-• Reason for Refund/Cancellation`;
+• Reason for Refund / Cancellation`;
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
 }
       if (userText === "issue_whatsapp") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_ISSUE_WHATSAPP"
+);
+
 reply =
-`⚠️ Please share:
+`⚠️ Order Issue
+
+Please share:
 
 • Name
 • Mobile Number
 • Order Number
 • Issue Details`;
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
 }
 
 if (userText === "issue_zomato") {
+
+await saveOrderState(
+  from,
+  "SUPPORT_ISSUE_ZOMATO"
+);
+
 reply =
-`⚠️ Please share:
+`⚠️ Order Issue
+
+Please share:
 
 • Name
 • Mobile Number
 • Zomato Order ID
 • Issue Details`;
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+  messaging_product: "whatsapp",
+  to: from,
+  text: {
+    body: reply
+  }
+},
+{
+  headers: {
+    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+}
+);
+
+return res.sendStatus(200);
 }
      if (userText === "talk_team" ||
   userText.toLowerCase() === "talk to team"
@@ -2332,7 +2502,64 @@ Please share:
 
   return res.sendStatus(200);
 }
-      
+   if (
+currentState &&
+currentState.startsWith("SUPPORT_")
+) {
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: ADMIN_PHONE,
+text: {
+body:
+`📞 CUSTOMER SUPPORT REQUEST
+
+Type:
+${currentState}
+
+Customer:
+${from}
+
+Details:
+${userText}`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+await saveOrderState(from, "");
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+text: {
+body:
+`✅ Thank you.
+
+Your request has been forwarded to our team.
+
+We will contact you shortly.`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+return res.sendStatus(200);
+}   
       const aiResponse =
   await generateReply(
     from,
