@@ -471,16 +471,6 @@ then return:
   "create_order": true
 }
 
-If customer explicitly asks:
-"talk to human"
-"talk to team"
-"call me"
-"human support"
-
-Then reply:
-
-"Please select Talk to Team from the menu."
-
 If customer is confirming an order,
 return JSON in this format:
 
@@ -1742,9 +1732,66 @@ await axios.post(
 
 return res.sendStatus(200);
 }
-     if (userText === "talk_team" ||
+     if (
+  userText === "talk_team" ||
   userText.toLowerCase() === "talk to team"
 ) {
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: ADMIN_PHONE,
+      text: {
+        body:
+`🔔 Bleu Bakes Support Alert
+
+Customer: ${from}
+
+Requested Human Support`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body:
+`📞 Need assistance?
+
+Our team has been notified and will contact you shortly.
+
+For urgent support:
+
+📱 +91 YOUR_NUMBER
+
+Thank you for choosing Bleu Bakes ❤️`
+      }
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  await saveOrderState(
+    from,
+    "HUMAN_SUPPORT"
+  );
+
+  return res.sendStatus(200);
+}
 
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
