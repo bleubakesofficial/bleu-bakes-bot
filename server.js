@@ -580,9 +580,64 @@ const isAfterHours =
     }
 
     const from = message.from;
-    const currentState =
-  await getOrderState(from);
+   {
+const eventType =
+currentState.split("|")[1] || "";
 
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: ADMIN_PHONE,
+text: {
+body:
+`🎪 NEW EVENT ENQUIRY
+
+Type:
+${eventType}
+
+Customer:
+${from}
+
+Details:
+${userText}`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+await saveOrderState(from, "");
+
+await axios.post(
+`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+{
+messaging_product: "whatsapp",
+to: from,
+text: {
+body:
+`✅ Thank you.
+
+Your enquiry has been forwarded to our events team.
+
+We will contact you shortly.`
+}
+},
+{
+headers: {
+Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+"Content-Type": "application/json"
+}
+}
+);
+
+return res.sendStatus(200);
+}
+    
 if (
   currentState &&
   currentState.includes("HUMAN_SUPPORT") &&
@@ -1228,6 +1283,10 @@ This helps us understand where our customers discover Bleu Bakes.`;
                   id: "collaboration",
                   title: "Collaboration"
                 }
+                {
+                  id: "other_event",
+                  title: "Other Requirement"
+                }
               ]
             }
           ]
@@ -1243,6 +1302,36 @@ This helps us understand where our customers discover Bleu Bakes.`;
   );
 return res.sendStatus(200);
      }
+
+  if (
+  userText === "society_stall" ||
+  userText === "college_event" ||
+  userText === "corporate_bulk" ||
+  userText === "collaboration" ||
+  userText === "other_event"
+) {
+
+  await saveOrderState(
+    from,
+    `EVENT_LEAD|${userText}`
+  );
+
+  reply =
+`🎪 Thank you for your interest in Bleu Bakes.
+
+Please share:
+
+• Name
+• Mobile Number
+• Event Date
+• Expected Guests / Quantity
+• Location
+• Any Special Requirements
+
+Our team will review your requirement and contact you shortly.`;
+
+}
+  
       if (userText === "google_review") {
 reply =
 `⭐⭐⭐⭐⭐
@@ -2502,6 +2591,13 @@ Please share:
 
   return res.sendStatus(200);
 }
+  const currentState =
+  await getOrderState(from);
+
+if (
+currentState &&
+currentState.startsWith("EVENT_LEAD")
+)
    if (
 currentState &&
 currentState.startsWith("SUPPORT_")
