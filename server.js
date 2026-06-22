@@ -2,10 +2,8 @@ const express = require("express");
 const axios = require("axios");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { google } = require("googleapis");
-
 const app = express();
 app.use(express.json());
-
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
@@ -17,38 +15,30 @@ const FEEDBACK_SHEET_ID = process.env.FEEDBACK_SHEET_ID;
 const selectedFlavours = {};
 const afterHoursSent = {};
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
-
 app.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
-
   if (mode && token === VERIFY_TOKEN) {
     return res.status(200).send(challenge);
   }
-
   res.sendStatus(403);
 });
 
 async function getMenuData() {
   const client = await auth.getClient();
-
   const sheets = google.sheets({
     version: "v4",
     auth: client
   });
-
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: GOOGLE_SHEET_ID,
     range: "A:E"
   });
-
   const rows = response.data.values || [];
-
   return rows
     .slice(1)
     .map(row => ({
@@ -59,20 +49,16 @@ async function getMenuData() {
       price: row[4] || ""
     }));
 }
-
 function isGreeting(text) {
   const greetings = ["hi", "hello", "hey", "start"];
   return greetings.includes(text.toLowerCase().trim());
 }
-
 async function saveOrder(order) {
   const client = await auth.getClient();
-
   const sheets = google.sheets({
     version: "v4",
     auth: client
   });
-
   await sheets.spreadsheets.values.append({
     spreadsheetId: ORDERS_SHEET_ID,
     range: "A:K",
@@ -96,24 +82,19 @@ async function saveOrder(order) {
 }
 async function getOrderState(phone) {
   const client = await auth.getClient();
-
   const sheets = google.sheets({
     version: "v4",
     auth: client
   });
-
   const response =
     await sheets.spreadsheets.values.get({
       spreadsheetId: ORDER_STATE_SHEET_ID,
       range: "A:C"
     });
-
   const rows =
     response.data.values || [];
-
   const row =
     rows.find(r => r[0] === phone);
-
   return row ? row[1] : "";
 }
 async function saveFeedback(
@@ -124,13 +105,11 @@ async function saveFeedback(
 ) {
   const client =
     await auth.getClient();
-
   const sheets =
     google.sheets({
       version: "v4",
       auth: client
     });
-
   await sheets.spreadsheets.values.append({
     spreadsheetId:
       FEEDBACK_SHEET_ID,
@@ -153,26 +132,21 @@ async function saveOrderState(
   state
 ) {
   const client = await auth.getClient();
-
   const sheets = google.sheets({
     version: "v4",
     auth: client
   });
-
   const response =
     await sheets.spreadsheets.values.get({
       spreadsheetId: ORDER_STATE_SHEET_ID,
       range: "A:C"
     });
-
   const rows =
     response.data.values || [];
-
   const rowIndex =
     rows.findIndex(
       r => r[0] === phone
     );
-
   if (rowIndex === -1) {
     await sheets.spreadsheets.values.append({
       spreadsheetId:
@@ -203,7 +177,6 @@ async function saveOrderState(
     });
   }
 }
-
 async function generateReply(phone, userMessage) {
   const orderState =
   await getOrderState(phone);
@@ -211,16 +184,13 @@ async function generateReply(phone, userMessage) {
   "Current Order State:",
   orderState
 );
-  
   const menuData = await getMenuData();
-
   const menuText = menuData
     .map(
       item =>
         `${item.category} | ${item.subcategory} | ${item.item} | ${item.size} | ₹${item.price}`
     )
-    .join("\n");
-  
+    .join("\n"); 
 const currentDateTime =
   new Date().toLocaleString(
     "en-IN",
@@ -228,99 +198,69 @@ const currentDateTime =
       timeZone: "Asia/Kolkata"
     }
   );
-  
  const rememberedFlavour =
   selectedFlavours[phone] || "";
-  
   const prompt = `
 You are Bleu Bakes' senior bakery sales executive on WhatsApp.
-
 CURRENT DATE & TIME:
 ${currentDateTime}
 CURRENT ORDER STATE:
 ${orderState}
 SELECTED FLAVOUR:
 ${rememberedFlavour}
-
 MENU:
 ${menuText}
-
 NEW CUSTOMER MESSAGE:
 ${userMessage}
 
 Always maintain and update the current order state.
-
 Return:
-
 {
   "create_order": false,
   "orderState": "Customer asked for menu",
   "reply": ""
 }
-
 {
   "create_order": true,
   "orderState": "Customer ordered 1kg Chocolate Truffle Cake for pickup on 25 June",
   ...
 }
 ORDER STATE RULES:
-
 The orderState field must ALWAYS contain the latest customer context.
 
 Examples:
-
 "Customer wants a 1kg Chocolate Truffle Cake."
-
 "Customer wants a Spiderman cake for 25 June."
-
 "Customer selected delivery and provided pincode 110040."
-
 "Waiting for flavour confirmation."
 
 Never erase previously collected information.
-
 Always keep all confirmed details in orderState and append new information.
-
 If SELECTED FLAVOUR is not empty,
 the customer has already chosen a flavour.
-
 Never ask flavour again.
-
 Use that flavour in the final order.
 
 Example:
-
 Customer wants 1kg Chocolate Truffle Cake
 → Customer wants 1kg Chocolate Truffle Cake for 25 June
 → Customer wants 1kg Chocolate Truffle Cake for 25 June pickup
 → Customer wants 1kg Chocolate Truffle Cake for 25 June pickup, waiting for confirmation
 
 RULES:
-
 * Reply in the same language used by the customer.
-
 * If customer speaks Hindi, reply in Hindi.
-
 * If customer speaks Hinglish, reply in Hinglish.
-
 * If customer speaks English, reply in English.
-
 * Ask maximum 2 questions at a time.
-
 * Sound human and conversational.
-
 * Use attractive WhatsApp formatting.
-
 * Never invent menu items.
-
 * Never invent prices.
-
 * Minimum order value ₹250.
-
 * If customer asks for the full menu, do NOT display every item at once.
 
 Instead show categories:
-
 🎨 Custom Cakes
 🎂 Cakes
 🎁 Bento Cakes
@@ -333,64 +273,50 @@ Instead show categories:
 🥤 Beverages
 
 Then ask:
-
 "Which category would you like to explore?"
 
 CUSTOM CAKE FLOW:
 
 CUSTOM CAKE RULES:
-
 • Minimum weight: 300g
 • Maximum weight: Any weight
 
 Pricing:
-
 • Use Bento pricing for 300g custom cakes
 • Use Cake pricing for 500g and above
 
 CUSTOM CAKE PRICING RULES:
-
 • Minimum custom cake weight: 300g
 • Maximum custom cake weight: Any weight
-
 • For 300g custom cakes use Bento pricing.
 • For 500g and above use Cake pricing.
 
 Every custom cake includes a mandatory ₹250 customisation charge.
-
 Internally add ₹250 to the final cake price.
-
 Required Time is mandatory.
 
 Accept:
 • Specific times (5 PM, 6:30 PM, 11 AM)
 • Time periods (Morning, Afternoon, Evening, Night)
-
 Do not display these examples unless customer specifically asks.
 
 IMPORTANT:
-
 Never show:
 • ₹250 charge
 • surcharge
 • customisation fee
 • calculations
 • price breakdown
-
 Only show the final payable amount.
 
 Examples for internal understanding only:
-
 500g Chocolate Truffle Cake ₹500
 Custom version final price ₹750
-
 300g Belgian Chocolate Bento ₹350
 Custom version final price ₹600
-
 Do NOT reveal these calculations to customers.
 
 Collect only missing details:
-
 • Theme
 • Flavour
 • Weight
@@ -400,80 +326,62 @@ Collect only missing details:
 • Delivery or Pickup
 
 If Delivery:
-
 Collect ALL of the following before confirmation:
-
 • House/Flat Number
 • Area/Sector
 • Landmark
 • Pincode
-
 Do NOT ask for order confirmation until all required address details are collected.
 
 Allowed delivery pincodes:
-
 110040
 110039
 110036
 110082
 131028
 131029
-
 If pincode is outside the service area, reply:
-
 "Currently we deliver only in North Delhi, Kundli, Rai Industrial Area and Rajiv Gandhi Education City."
 
 If customer provides only a location name such as Kundli, Narela, Rohini, Sonipat, Delhi etc., do NOT treat it as a complete address.
 
 Still collect:
-
 • House/Flat Number
 • Area/Sector
 • Landmark
 • Pincode
 
 If customer says:
-
 "No image"
 "No reference"
 "You choose"
-
 Then continue without asking for an image again.
 
 Before asking the next question:
-
 * Briefly summarize collected details.
 * Ask only for missing details.
 
 Once all details are collected:
-
 Show a complete order summary.
 
 Then ask:
-
 "Would you like to confirm this order?"
-
 Do NOT create an order immediately after collecting details.
 
 Only if customer explicitly says:
-
 * Confirm
 * Confirm Order
 * Yes Confirm
 * Place Order
 * Book It
-
 AND all required order details have already been collected,
 
 then return:
-
 {
   "create_order": true
 }
-
 If customer is confirming an order,
 return JSON in this format:
-
 {
  "create_order": true,
  "name": "",
@@ -487,9 +395,7 @@ return JSON in this format:
  "reply": ""
 }
 IMPORTANT:
-
 Return ONLY valid JSON.
-
 Do NOT return markdown.
 Do NOT return code blocks.
 Do NOT return explanations.
