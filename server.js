@@ -658,6 +658,10 @@ We will review everything and get back to you during working hours (10 AM – 10
                 {
                   id: "existing_order",
                   title: "Order / Zomato Query"
+                },
+                {
+                  id: "feedback",
+                  title: "⭐ Leave Feedback"
                 }
               ]
             }
@@ -944,60 +948,6 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 
 return res.sendStatus(200);
 }
-      
-      if (userText === "more_menu") {
-
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: from,
-      type: "interactive",
-      interactive: {
-        type: "button",
-        body: {
-          text:
-`⚙️ More Menu
-
-Please choose an option:`
-        },
-        action: {
-buttons: [
-{
-  type: "reply",
-  reply: {
-    id: "feedback",
-    title: "⭐ Feedback"
-  }
-},
-{
-  type: "reply",
-  reply: {
-    id: "talk_team",
-    title: "👨‍🍳 Talk Team"
-  }
-},
-{
-  type: "reply",
-  reply: {
-    id: "back_main",
-    title: "↩️ Back"
-  }
-}
-]
-        }
-      }
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
-      }
-    }
-  );
-
-  return res.sendStatus(200);
-}
 
       if (userText === "back_main") {
 
@@ -1034,52 +984,9 @@ How may we assist you today?`
             {
               type: "reply",
               reply: {
-                id: "more_menu",
-                title: "⚙️ More Menu"
+                id: "talk_team",
+                title: "👨‍🍳 Talk Team"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
-      }
-    }
-  );
-
-  return res.sendStatus(200);
-}
-      if (userText === "support_menu") {
-
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: from,
-      type: "interactive",
-     interactive: {
-    type: "list",
-        body: {
-          text: "💬 Feedback & Support"
-        },
-        action: {
-          button: "View Options",
-          sections: [
-            {
-              title: "Support",
-              rows: [
-                {
-                  id: "feedback",
-                  title: "Leave Feedback"
-                },
-                {
-                  id: "talk_team",
-                  title: "Talk to Team"
-                }
-              ]
             }
           ]
         }
@@ -2752,8 +2659,8 @@ How may we assist you today?`
             {
               type: "reply",
               reply: {
-                id: "more_menu",
-                title: "⚙️ More Menu"
+                id: "talk_team",
+                title: "👨‍🍳 Talk Team"
               }
             }
           ]
