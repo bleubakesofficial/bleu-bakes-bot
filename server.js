@@ -523,7 +523,7 @@ try {
   reply:
 `We're experiencing a temporary delay.
 
-📞 For an immediate response, please call or WhatsApp us directly on +91XXXXXXXXXX.
+📞 For an immediate response, please call or WhatsApp us directly on +917988957953.
 
 Our team will be happy to assist you personally.`
 };
@@ -1109,15 +1109,13 @@ reply =
 Thank you for choosing Bleu Bakes.
 
 We'd love your review:
-
-YOUR_GOOGLE_REVIEW_LINK`;
+https://maps.app.goo.gl/53SxWmZxR2QRFncJA?g_st=ic`;
 return;
 }
       if (userText === "instagram") {
 reply =
 `📸 Follow Bleu Bakes
-
-YOUR_INSTAGRAM_LINK`;
+https://www.instagram.com/bleubakesofficial?igsh=MXhqMXN2OThqcHJtMg==`;
 return;
 }
 if (userText === "send_feedback") {
@@ -1211,10 +1209,10 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 We're so happy you loved it.
 
 ⭐ Please leave us a Google Review:
-YOUR_GOOGLE_REVIEW_LINK
+https://maps.app.goo.gl/53SxWmZxR2QRFncJA?g_st=ic
 
 📸 Follow us on Instagram:
-YOUR_INSTAGRAM_LINK`;
+https://www.instagram.com/bleubakesofficial?igsh=MXhqMXN2OThqcHJtMg==`;
 
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
@@ -1676,13 +1674,10 @@ Talk To Team`
       text: {
         body:
 `📞 Need assistance?
-
 Our team has been notified and will contact you shortly.
 
 For urgent support:
-
-📱 +91 YOUR_NUMBER
-
+📱 +91 7988957953
 Thank you for choosing Bleu Bakes ❤️`
       }
     },
@@ -2682,10 +2677,7 @@ How may we assist you today?`
     from,
     userText
   );
- console.log(
-  "Gemini Order State:",
-  aiResponse.orderState
-);    
+    
 if (
   aiResponse.orderState !== undefined
 ) {
@@ -2747,10 +2739,32 @@ Please check Orders Sheet.`
     }
   }
 );
+
+  let pickupNote = "";
+
+if (
+  aiResponse.deliveryType &&
+  aiResponse.deliveryType
+    .toLowerCase()
+    .includes("pickup")
+) {
+  pickupNote = `
+
+📍 Pickup Address
+
+Bleu Bakes
+Shop No.-18,
+Dada Chatri Wali Market,
+Near Shri Sidh Shani Mandir,
+Sector B-2,
+Narela, Delhi - 110036`;
+}
   reply =
 `${aiResponse.reply ||
 
 "🎉 Your order request has been received successfully. Our team will contact you shortly."}
+
+${pickupNote}
 
 ━━━━━━━━━━━━━━
 
@@ -2773,7 +2787,7 @@ Reply:
     if (!reply || !reply.trim()) {
   reply = "Thank you for contacting Bleu Bakes ❤️";
 }
-console.log("FINAL REPLY =", reply);
+
     await axios.post(
       `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
       {
