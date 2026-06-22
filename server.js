@@ -1732,9 +1732,9 @@ await axios.post(
 
 return res.sendStatus(200);
 }
-     if (
+    if (
   userText === "talk_team" ||
-  userText.toLowerCase() === "talk to team"
+  userText?.toLowerCase() === "talk to team"
 ) {
 
   await axios.post(
@@ -1744,11 +1744,13 @@ return res.sendStatus(200);
       to: ADMIN_PHONE,
       text: {
         body:
-`🔔 Bleu Bakes Support Alert
+`🔔 BLEU BAKES HUMAN SUPPORT REQUEST
 
-Customer: ${from}
+Customer:
+${from}
 
-Requested Human Support`
+Requested:
+Talk To Team`
       }
     },
     {
@@ -1792,10 +1794,7 @@ Thank you for choosing Bleu Bakes ❤️`
 
   return res.sendStatus(200);
 }
-  if (
-  userText === "talk_team" ||
-  userText?.toLowerCase() === "talk to team"
-)
+       
       if (userText === "1") {
 
   reply =
@@ -2864,6 +2863,9 @@ Reply:
     "Thank you for contacting Bleu Bakes.";
 }
     }
+    if (!reply || !reply.trim()) {
+  reply = "Thank you for contacting Bleu Bakes ❤️";
+}
 console.log("FINAL REPLY =", reply);
     await axios.post(
       `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
