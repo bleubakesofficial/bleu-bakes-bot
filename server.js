@@ -263,7 +263,7 @@ RULES:
 Instead show categories:
 🎨 Custom Cakes
 🎂 Cakes
-🎁 Bento Cakes
+🎁 Bento Cakes (300gm)
 🍰 Pastries & Cupcakes
 🫙 Jar Cakes
 🍫 Brownies
@@ -405,20 +405,16 @@ Do NOT return text after JSON.
 Your entire response must be exactly one valid JSON object.
 
 Otherwise return:
-
 {
   "create_order": false,
   "orderState": "",
   "reply": ""
 }
 `;
-
   const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash"
   });
-
   let result;
-
 try {
   result =
     await model.generateContent(prompt);
@@ -434,13 +430,11 @@ try {
 Our team will be happy to assist you personally.`
 };
 }
-
   const text =
   result.response.text()
     .replace(/```json/g, "")
     .replace(/```/g, "")
     .trim();
-
 try {
   return JSON.parse(text);
 } catch {
@@ -451,11 +445,8 @@ try {
   };
 }
 }
-
 app.post("/webhook", async (req, res) => {
-
   const now = new Date();
-
 const indiaHour = Number(
   now.toLocaleString("en-US", {
     timeZone: "Asia/Kolkata",
@@ -463,23 +454,18 @@ const indiaHour = Number(
     hour12: false
   })
 );
-
 const isAfterHours =
   indiaHour < 10 || indiaHour >= 22;
-  
   try {
     const message =
       req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-
     if (!message) {
       return res.sendStatus(200);
     }
-
     const from = message.from;
     let reply = "";
     const currentState =
-  await getOrderState(from);
-    
+  await getOrderState(from);   
 if (
   currentState &&
   currentState.includes("HUMAN_SUPPORT") &&
@@ -490,28 +476,22 @@ if (
 }
     console.log("Webhook hit");
     console.log("From:", from);
-
     let userText = "";
-
     if (message.text) {
   userText = message.text.body;
 }
-
 if (message.interactive?.button_reply) {
   userText =
     message.interactive.button_reply.id;
 }
-
 if (message.interactive?.list_reply) {
   userText =
     message.interactive.list_reply.id;
 }
-
 if (
   isAfterHours &&
   !afterHoursSent[from]
 ) {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -520,11 +500,8 @@ if (
       text: {
         body:
 `🌙 Thanks for reaching out to Bleu Bakes!
-
 Our team is currently offline.
-
 You can still place your order and share all details.
-
 We will review everything and get back to you during working hours (10 AM – 10 PM). 😊`
       }
     },
@@ -535,11 +512,9 @@ We will review everything and get back to you during working hours (10 AM – 10
       }
     }
   );
-
   afterHoursSent[from] = true;
 } else {
      if (userText === "orders_queries") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -585,10 +560,8 @@ We will review everything and get back to you during working hours (10 AM – 10
        return res.sendStatus(200);
      }
  if (userText === "new_order") {
-
    await saveOrderState(from, "");
 delete selectedFlavours[from];
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -608,7 +581,7 @@ delete selectedFlavours[from];
               rows: [
   { id: "custom_cake", title: "🎨 Custom Cakes" },
   { id: "cakes", title: "🎂 Cakes" },
-  { id: "bento_cakes", title: "🎁 Bento Cakes" },
+  { id: "bento_cakes", title: "🎁 Bento Cakes (300gm)" },
   { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
@@ -630,10 +603,8 @@ delete selectedFlavours[from];
     }
   );
 return res.sendStatus(200);
- }
-      
+ }   
       if (userText === "existing_order") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -683,7 +654,6 @@ return res.sendStatus(200);
 return res.sendStatus(200);
       }
       if (userText === "order_update") {
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -722,11 +692,9 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 return res.sendStatus(200);
 }
      if (userText === "modify_order") {
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -765,11 +733,9 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 return res.sendStatus(200);
 }
       if (userText === "order_issue") {
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -808,11 +774,9 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 return res.sendStatus(200);
 }
       if (userText === "refund") {
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -851,12 +815,9 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 return res.sendStatus(200);
 }
-
       if (userText === "back_main") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -868,7 +829,6 @@ return res.sendStatus(200);
         body: {
           text:
 `👋 Welcome to Bleu Bakes!
-
 How may we assist you today?`
         },
         action: {
@@ -905,12 +865,9 @@ How may we assist you today?`
       }
     }
   );
-
   return res.sendStatus(200);
-}
-    
+}    
      if (userText === "events") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -963,7 +920,6 @@ How may we assist you today?`
   );
 return res.sendStatus(200);
      }
-
   if (
   userText === "society_stall" ||
   userText === "college_event" ||
@@ -971,12 +927,10 @@ return res.sendStatus(200);
   userText === "collaboration" ||
   userText === "other_event"
 ) {
-
   await saveOrderState(
     from,
     `EVENT_LEAD|${userText}`
   );
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -987,7 +941,6 @@ return res.sendStatus(200);
 `🎪 Let's plan something sweet!
 
 Please share the following details:
-
 👤 Name:
 📞 Mobile Number:
 📅 Date & Location:
@@ -1004,14 +957,11 @@ Our team will review your requirement and contact you shortly.`
       }
     }
   );
-
   return res.sendStatus(200);
 }
-  
       if (userText === "google_review") {
 reply =
 `⭐⭐⭐⭐⭐
-
 Thank you for choosing Bleu Bakes.
 
 We'd love your review:
@@ -1025,7 +975,6 @@ https://www.instagram.com/bleubakesofficial?igsh=MXhqMXN2OThqcHJtMg==`;
 return;
 }
 if (userText === "send_feedback") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1037,9 +986,7 @@ if (userText === "send_feedback") {
         body: {
           text:
 `⭐⭐⭐⭐⭐
-
 Thank you for choosing Bleu Bakes!
-
 How was your experience?`
         },
         action: {
@@ -1076,12 +1023,9 @@ How was your experience?`
       }
     }
   );
-
   return res.sendStatus(200);
 }
-
     if (userText === "loved_it") {
-
   await saveFeedback(
     from,
     "Loved It"
@@ -1094,10 +1038,8 @@ to: ADMIN_PHONE,
 text: {
 body:
 `😍 NEW POSITIVE FEEDBACK
-
 Customer:
 ${from}
-
 Rating:
 Loved It`
 }
@@ -1111,7 +1053,6 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 );
   reply =
 `😍 Thank you!
-
 We're so happy you loved it.
 
 ⭐ Please leave us a Google Review:
@@ -1119,7 +1060,6 @@ https://maps.app.goo.gl/53SxWmZxR2QRFncJA?g_st=ic
 
 📸 Follow us on Instagram:
 https://www.instagram.com/bleubakesofficial?igsh=MXhqMXN2OThqcHJtMg==`;
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1136,11 +1076,9 @@ https://www.instagram.com/bleubakesofficial?igsh=MXhqMXN2OThqcHJtMg==`;
       }
     }
   );
-
   return res.sendStatus(200);
 }
      if (userText === "good") {
-
   await saveFeedback(
     from,
     "Good"
@@ -1153,10 +1091,8 @@ to: ADMIN_PHONE,
 text: {
 body:
 `🙂 CUSTOMER FEEDBACK
-
 Customer:
 ${from}
-
 Rating:
 Good`
 }
@@ -1170,9 +1106,7 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 );
   reply =
 `🙂 Thank you!
-
 What could we do to make your experience even better?`;
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1189,12 +1123,9 @@ What could we do to make your experience even better?`;
       }
     }
   );
-
   return res.sendStatus(200);
 }
-
 if (userText === "could_be_better") {
-
   await saveFeedback(
     from,
     "Could Be Better"
@@ -1207,13 +1138,10 @@ to: ADMIN_PHONE,
 text: {
 body:
 `😕 CUSTOMER ISSUE
-
 Customer:
 ${from}
-
 Rating:
 Could Be Better
-
 Waiting for customer comments.`
 }
 },
@@ -1224,12 +1152,9 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
   reply =
 `😕 We're sorry we missed the mark.
-
 Please tell us what went wrong so we can improve.`;
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1246,21 +1171,17 @@ Please tell us what went wrong so we can improve.`;
       }
     }
   );
-
   return res.sendStatus(200);
 }
    if (userText === "update_whatsapp") {
-
 await saveOrderState(
   from,
   "SUPPORT_UPDATE_WHATSAPP"
 );
-
 reply =
 `📦 Order Update Request
 
 Please share:
-
 • Name
 • Mobile Number
 • Order Date
@@ -1282,22 +1203,17 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
 }
-
 if (userText === "update_zomato") {
-
 await saveOrderState(
   from,
   "SUPPORT_UPDATE_ZOMATO"
 );
-
 reply =
 `📦 Order Update Request
 
 Please share:
-
 • Name
 • Mobile Number
 • Zomato Order ID
@@ -1319,27 +1235,21 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
 }
-
 if (userText === "modify_whatsapp") {
-
 await saveOrderState(
   from,
   "SUPPORT_MODIFY_WHATSAPP"
 );
-
 reply =
 `✏️ Modify Order Request
 
 Please share:
-
 • Name
 • Mobile Number
 • Order Number
 • Changes Required`;
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1356,27 +1266,21 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
-}
-  
+} 
 if (userText === "modify_zomato") {
-
 await saveOrderState(
   from,
   "SUPPORT_MODIFY_ZOMATO"
 );
-
 reply =
 `✏️ Modify Order Request
 
 Please share:
-
 • Name
 • Mobile Number
 • Zomato Order ID
 • Changes Required`;
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1393,27 +1297,21 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
 }
-
 if (userText === "refund_whatsapp") {
-
 await saveOrderState(
   from,
   "SUPPORT_REFUND_WHATSAPP"
 );
-
 reply =
 `💰 Refund / Cancellation Request
 
 Please share:
-
 • Name
 • Mobile Number
 • Order Number
 • Reason for Refund / Cancellation`;
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1430,27 +1328,21 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
-}
-  
+} 
 if (userText === "refund_zomato") {
-
 await saveOrderState(
   from,
   "SUPPORT_REFUND_ZOMATO"
 );
-
 reply =
 `💰 Refund / Cancellation Request
 
 Please share:
-
 • Name
 • Mobile Number
 • Zomato Order ID
 • Reason for Refund / Cancellation`;
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1467,26 +1359,21 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
 }
       if (userText === "issue_whatsapp") {
-
 await saveOrderState(
   from,
   "SUPPORT_ISSUE_WHATSAPP"
 );
-
 reply =
 `⚠️ Order Issue
 
 Please share:
-
 • Name
 • Mobile Number
 • Order Number
 • Issue Details`;
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1503,27 +1390,20 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
 }
-
 if (userText === "issue_zomato") {
-
 await saveOrderState(
   from,
   "SUPPORT_ISSUE_ZOMATO"
 );
-
-reply =
-`⚠️ Order Issue
+reply =`⚠️ Order Issue
 
 Please share:
-
 • Name
 • Mobile Number
 • Zomato Order ID
 • Issue Details`;
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1540,28 +1420,22 @@ await axios.post(
   }
 }
 );
-
 return res.sendStatus(200);
 }
     if (
   userText === "talk_team" ||
   userText?.toLowerCase() === "talk to team"
 ) {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
       messaging_product: "whatsapp",
       to: ADMIN_PHONE,
       text: {
-        body:
-`🔔 BLEU BAKES HUMAN SUPPORT REQUEST
-
+        body: `🔔 BLEU BAKES HUMAN SUPPORT REQUEST
 Customer:
 ${from}
-
-Requested:
-Talk To Team`
+Requested: Talk To Team`
       }
     },
     {
@@ -1571,7 +1445,6 @@ Talk To Team`
       }
     }
   );
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1594,52 +1467,29 @@ Thank you for choosing Bleu Bakes ❤️`
       }
     }
   );
-
   await saveOrderState(
     from,
     "HUMAN_SUPPORT"
   );
-
   return res.sendStatus(200);
-}
-       
+}     
       if (userText === "1") {
-
-  reply =
-`🍫 Brownie added to your order.
-
+  reply = `🍫 Brownie added to your order.
 Anything else you'd like?`;
-
 }
-
 if (userText === "2") {
-
-  reply =
-`🧁 Cupcake added to your order.
-
+  reply = `🧁 Cupcake added to your order.
 Anything else you'd like?`;
-
 }
-
 if (userText === "3") {
-
-  reply =
-`🍰 Jar Cake added to your order.
-
+  reply = `🍰 Jar Cake added to your order.
 Anything else you'd like?`;
-
 }
-
 if (userText === "4") {
-
-  reply =
-`👍 No problem.
-
+  reply = `👍 No problem.
 We'll continue with your order.`;
-
 }
     if (userText === "feedback") {
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -1651,9 +1501,7 @@ type: "button",
 body: {
 text:
 `⭐⭐⭐⭐⭐
-
 We'd love your feedback!
-
 How was your experience with Bleu Bakes?`
 },
 action: {
@@ -1695,12 +1543,10 @@ return res.sendStatus(200);
       if (
   userText.startsWith("ready ")
 ) {
-
   const customerPhone =
     userText
       .replace("ready ", "")
       .trim();
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1709,9 +1555,7 @@ return res.sendStatus(200);
       text: {
         body:
 `🎂 Your order is ready!
-
 You may now collect your order from Bleu Bakes.
-
 Thank you for choosing us ❤️`
       }
     },
@@ -1722,21 +1566,17 @@ Thank you for choosing us ❤️`
       }
     }
   );
-
   reply =
 `✅ Ready notification sent to ${customerPhone}`;
-
   return;
 }
       if (
   userText.startsWith("out ")
 ) {
-
   const customerPhone =
     userText
       .replace("out ", "")
       .trim();
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1745,9 +1585,7 @@ Thank you for choosing us ❤️`
       text: {
         body:
 `🚚 Good news!
-
 Your order is on the way.
-
 We'll see you soon ❤️`
       }
     },
@@ -1758,21 +1596,17 @@ We'll see you soon ❤️`
       }
     }
   );
-
   reply =
 `✅ Out For Delivery notification sent to ${customerPhone}`;
-
   return;
 }
       if (
   userText.startsWith("delivered ")
 ) {
-
   const customerPhone =
     userText
       .replace("delivered ", "")
       .trim();
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1781,9 +1615,7 @@ We'll see you soon ❤️`
       text: {
         body:
 `🎉 Your order has been delivered.
-
 We hope you enjoy every bite!
-
 Thank you for choosing Bleu Bakes ❤️`
       }
     },
@@ -1794,10 +1626,8 @@ Thank you for choosing Bleu Bakes ❤️`
       }
     }
   );
-
   reply =
 `✅ Delivered notification sent to ${customerPhone}`;
-
   return;
 }
 if (
@@ -1806,7 +1636,6 @@ if (
 {
   const customerPhone =
     userText.replace("feedback ", "").trim();
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1818,9 +1647,7 @@ if (
         body: {
           text:
 `⭐⭐⭐⭐⭐
-
 Thank you for choosing Bleu Bakes!
-
 How was your experience?`
         },
         action: {
@@ -1857,19 +1684,15 @@ How was your experience?`
       }
     }
   );
-
   return res.sendStatus(200);
 }
       if (userText === "custom_cake") {
-
 await saveOrderState(from, "");
 delete selectedFlavours[from];
-
 reply =
 `🎂 Custom Cakes
 
 Please share:
-
 • Theme
 • Flavour
 • Weight
@@ -1877,11 +1700,9 @@ Please share:
 • Date
 • Time
 • Delivery or Pickup
-
 Please share the details and we'll get started 😊`;
 }
       if (userText === "cakes") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1926,12 +1747,9 @@ Please share the details and we'll get started 😊`;
       }
     }
   );
-
   return res.sendStatus(200);
-}
-     
+}    
       if (userText === "bento_cakes") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -1944,7 +1762,7 @@ Please share the details and we'll get started 😊`;
           text: "🎁 Select Bento Cake Category"
         },
         action: {
-          button: "View Bento Cakes",
+          button: "View Bento Cakes (300gm)",
           sections: [{
             title: "Bento Categories",
             rows: [
@@ -1973,10 +1791,8 @@ Please share the details and we'll get started 😊`;
     }
   );
   return res.sendStatus(200);
-}
-      
+}     
       if (userText === "classic_cakes") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2010,12 +1826,9 @@ Please share the details and we'll get started 😊`;
       }
     }
   );
-
   return res.sendStatus(200);
 }
-
 if (userText === "chocolate_cakes") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2050,11 +1863,9 @@ if (userText === "chocolate_cakes") {
       }
     }
   );
-
   return res.sendStatus(200);
 }
 if (userText === "premium_cakes") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2120,8 +1931,7 @@ if (userText === "premium_cakes") {
       ]
     }
   ]
-}
-            
+}         
         }
       }
     ,
@@ -2132,11 +1942,9 @@ if (userText === "premium_cakes") {
       }
     }
   );
-
   return res.sendStatus(200);
 }
 if (userText === "fruit_cakes") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2168,11 +1976,9 @@ if (userText === "fruit_cakes") {
       }
     }
   );
-
   return res.sendStatus(200);
 }
       if (userText === "bento_classic") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2187,7 +1993,7 @@ if (userText === "fruit_cakes") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Classic Bento Cakes",
+            title: "Classic Bento Cakes (300gm)",
             rows: [
               { id: "bento_butterscotch", title: "Butterscotch" },
               { id: "bento_pineapple", title: "Pineapple" },
@@ -2207,12 +2013,9 @@ if (userText === "fruit_cakes") {
       }
     }
   );
-
   return res.sendStatus(200);
 }
-
 if (userText === "bento_chocolate") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2227,7 +2030,7 @@ if (userText === "bento_chocolate") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Chocolate Bento Cakes",
+            title: "Chocolate Bento Cakes (300gm)",
             rows: [
               { id: "bento_chocochip", title: "Chocochip" },
               { id: "bento_oreo", title: "Oreo" },
@@ -2245,11 +2048,9 @@ if (userText === "bento_chocolate") {
       }
     }
   );
-
   return res.sendStatus(200);
 }
 if (userText === "bento_premium") {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2264,7 +2065,7 @@ if (userText === "bento_premium") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Premium Bento Cakes",
+            title: "Premium Bento Cakes (300gm)",
             rows: [
               { id: "bento_love_pearl", title: "Love & Pearl" },
               { id: "bento_chocolate_mocha", title: "Chocolate Mocha" },
@@ -2282,7 +2083,6 @@ if (userText === "bento_premium") {
       }
     }
   );
-
   return res.sendStatus(200);
 }
       const flavourMap = {
@@ -2291,54 +2091,44 @@ if (userText === "bento_premium") {
   butter_scotch_caramel: "Butter Scotch Caramel",
   red_velvet: "Red Velvet",
   white_forest: "White Forest",
-
   chocolate_truffle: "Chocolate Truffle",
   chocochip: "Chocochip",
   chocolate_mousse: "Chocolate Mousse",
   oreo: "Oreo",
   kitkat: "KitKat",
   dairy_milk: "Dairy Milk",
-
   belgian_chocolate: "Belgian Chocolate",
   rasmalai: "Rasmalai",
   rose_pista: "Rose Pista",
   hazelnut_rocher: "Hazelnut Rocher",
   tiramisu: "Tiramisu",
   lotus_biscoff: "Lotus Biscoff",
-
   roll_up_chocolate: "Roll Up Chocolate",
   red_velvet_choco_truffle: "Red Velvet Choco Truffle",
   rich_butterscotch_crunch: "Rich Butterscotch Crunch",
   heart_shaped_red_velvet: "Heart Shaped Red Velvet",
   chocolate_truffle_bomb: "Chocolate Truffle Bomb",
-
   fresh_fruit: "Fresh Fruit",
   blueberry_fruit: "Blueberry",
   pineapple_fruit: "Pineapple",
-
   bento_butterscotch: "Butterscotch",
   bento_pineapple: "Pineapple",
   bento_red_velvet: "Red Velvet",
   bento_fresh_fruit: "Fresh Fruit",
   bento_chocolate_truffle: "Chocolate Truffle",
   bento_chocolate_vanilla: "Chocolate Vanilla",
-
   bento_chocochip: "Chocochip",
   bento_oreo: "Oreo",
   bento_kitkat: "KitKat",
   bento_dairymilk: "Dairy Milk",
-
   bento_love_pearl: "Love & Pearl",
   bento_chocolate_mocha: "Chocolate Mocha",
   bento_lotus_biscoff: "Lotus Biscoff",
   bento_belgian_chocolate: "Belgian Chocolate"
 };
-
 if (flavourMap[userText]) {
-
   selectedFlavours[from] =
   flavourMap[userText];
-  
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2349,7 +2139,6 @@ if (flavourMap[userText]) {
 `🎂 Selected Flavour: ${flavourMap[userText]}
 
 Please share:
-
 • Weight / Quantity
 • Delivery or Pickup
 • Required Date
@@ -2363,7 +2152,6 @@ Please share:
       }
     }
   );
-
   return res.sendStatus(200);
 }
       if (
@@ -2374,12 +2162,10 @@ Please share:
     userText
       .replace("resume ", "")
       .trim();
-
   await saveOrderState(
     customerPhone,
     ""
   );
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2397,17 +2183,14 @@ Please share:
       }
     }
   );
-
   return res.sendStatus(200);
 }
   if (
   currentState &&
   currentState.startsWith("EVENT_LEAD")
 ) {
-
   const eventType =
     currentState.split("|")[1] || "";
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2416,13 +2199,10 @@ Please share:
       text: {
         body:
 `🎪 NEW EVENT ENQUIRY
-
 Type:
 ${eventType}
-
 Customer:
 ${from}
-
 Details:
 ${userText}`
       }
@@ -2434,9 +2214,7 @@ ${userText}`
       }
     }
   );
-
   await saveOrderState(from, "");
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2445,9 +2223,7 @@ ${userText}`
       text: {
         body:
 `✅ Thank you.
-
 Your event enquiry has been received and forwarded to our team.
-
 A member of our team will contact you shortly. 🎪`
       }
     },
@@ -2458,15 +2234,12 @@ A member of our team will contact you shortly. 🎪`
       }
     }
   );
-
   return res.sendStatus(200);
 }
-
 if (
   currentState &&
   currentState.startsWith("SUPPORT_")
 ) {
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -2475,13 +2248,10 @@ to: ADMIN_PHONE,
 text: {
 body:
 `📞 CUSTOMER SUPPORT REQUEST
-
 Type:
 ${currentState}
-
 Customer:
 ${from}
-
 Details:
 ${userText}`
 }
@@ -2493,9 +2263,7 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 await saveOrderState(from, "");
-
 await axios.post(
 `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
 {
@@ -2504,9 +2272,7 @@ to: from,
 text: {
 body:
 `✅ Thank you.
-
 Your request has been forwarded to our team.
-
 We will contact you shortly.`
 }
 },
@@ -2517,7 +2283,6 @@ Authorization: `Bearer ${WHATSAPP_TOKEN}`,
 }
 }
 );
-
 return res.sendStatus(200);
 } 
   if (
@@ -2526,7 +2291,6 @@ return res.sendStatus(200);
     userText.toLowerCase().trim()
   )
 ) {
-
   await axios.post(
     `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
     {
@@ -2538,7 +2302,6 @@ return res.sendStatus(200);
         body: {
           text:
 `👋 Welcome to Bleu Bakes!
-
 How may we assist you today?`
         },
         action: {
@@ -2575,15 +2338,13 @@ How may we assist you today?`
       }
     }
   );
-
   return res.sendStatus(200);
 }
       const aiResponse =
   await generateReply(
     from,
     userText
-  );
-    
+  ); 
 if (
   aiResponse.orderState !== undefined
 ) {
@@ -2593,7 +2354,6 @@ if (
   );
 }
 if (aiResponse.create_order) {
-
   await saveOrder({
     phone: from,
     name: aiResponse.name,
@@ -2620,21 +2380,14 @@ await saveOrderState(
     text: {
       body:
 `🎉 NEW ORDER RECEIVED
-
 📱 Customer: ${from}
-
 🍰 Item: ${aiResponse.items || "-"}
 🎂 Flavour: ${aiResponse.flavour || "-"}
 ⚖️ Weight: ${aiResponse.weight || "-"}
-
 📅 Date: ${aiResponse.date || "-"}
 🕒 Time: ${aiResponse.time || "-"}
-
 🚚 Delivery: ${aiResponse.deliveryType || "-"}
-
-📍 Address:
-${aiResponse.address || "-"}
-
+📍 Address: ${aiResponse.address || "-"}
 Please check Orders Sheet.`
     }
   },
@@ -2645,9 +2398,7 @@ Please check Orders Sheet.`
     }
   }
 );
-
   let pickupNote = "";
-
 if (
   aiResponse.deliveryType &&
   aiResponse.deliveryType
@@ -2657,7 +2408,6 @@ if (
   pickupNote = `
 
 📍 Pickup Address
-
 Bleu Bakes
 Shop No.-18,
 Dada Chatri Wali Market,
@@ -2667,24 +2417,17 @@ Narela, Delhi - 110036`;
 }
   reply =
 `${aiResponse.reply ||
-
 "🎉 Your order request has been received successfully. Our team will contact you shortly."}
-
 ${pickupNote}
-
 ━━━━━━━━━━━━━━
-
 🎁 Add something extra?
 
 Reply:
-
 1 = Brownie ₹110
 2 = Cupcake ₹130
 3 = Jar Cake ₹200
 4 = No Thanks`;
-
 } else {
-
   reply =
     aiResponse.reply ||
     "Thank you for contacting Bleu Bakes.";
@@ -2693,7 +2436,6 @@ Reply:
     if (!reply || !reply.trim()) {
   reply = "Thank you for contacting Bleu Bakes ❤️";
 }
-
     await axios.post(
       `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
       {
@@ -2710,17 +2452,14 @@ Reply:
         }
       }
     );
-
     res.sendStatus(200);
   } catch (error) {
     console.error(
       error.response?.data || error.message
     );
-
     res.sendStatus(500);
   }
 });
-
 app.listen(process.env.PORT || 10000, () => {
   console.log("Bleu Bakes Bot Running");
 });
