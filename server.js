@@ -278,7 +278,7 @@ Then ask:
 CUSTOM CAKE FLOW:
 
 CUSTOM CAKE RULES:
-• Minimum weight: 300g
+• Minimum weight: 300 gm
 • Maximum weight: Any weight
 
 Pricing:
@@ -286,7 +286,7 @@ Pricing:
 • Use Cake pricing for 500g and above
 
 CUSTOM CAKE PRICING RULES:
-• Minimum custom cake weight: 300gm
+• Minimum custom cake weight: 300 gm
 • Maximum custom cake weight: Any weight
 • For 300g custom cakes use Bento pricing.
 • For 500g and above use Cake pricing.
@@ -571,7 +571,25 @@ We will review everything and get back to you during working hours (10 AM – 10
   );
        return res.sendStatus(200);
      }
- if (userText === "new_order") {
+ await axios.post(
+  `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+  {
+    messaging_product: "whatsapp",
+    to: from,
+    type: "document",
+    document: {
+      link: "file:///Users/mayankkhatri/Downloads/Menu_BB.pdf",
+      filename: "Bleu_Bakes_Menu.pdf"
+    }
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+      "Content-Type": "application/json"
+    }
+  }
+);
+  if (userText === "new_order") {
    await saveOrderState(from, "");
 delete selectedFlavours[from];
   await axios.post(
@@ -583,7 +601,10 @@ delete selectedFlavours[from];
       interactive: {
         type: "list",
         body: {
-          text: "🎂 What would you like to order?"
+         text:
+`📖 View Our Menu Above
+
+🎂 What would you like to order?`
         },
         action: {
           button: "View Categories",
@@ -1733,19 +1754,23 @@ Please share the details and we'll get started 😊`;
             rows: [
               {
                 id: "classic_cakes",
-                title: "Classic Cakes"
+                title: "Classic Cakes",
+                description: "500 gm | 1 kg"
               },
               {
                 id: "chocolate_cakes",
-                title: "Chocolate Cakes"
+                title: "Chocolate Cakes",
+                description: "500 gm | 1 kg"
               },
               {
                 id: "premium_cakes",
-                title: "Premium Cakes"
+                title: "Premium Cakes",
+                description: "500 gm | 1 kg"
               },
               {
                 id: "fruit_cakes",
-                title: "Fruit Cakes"
+                title: "Fruit Cakes",
+                description: "500 gm | 1 kg"
               }
             ]
           }]
@@ -1780,15 +1805,18 @@ Please share the details and we'll get started 😊`;
             rows: [
               {
                 id: "bento_classic",
-                title: "Classic Bento"
+                title: "Classic Bento",
+                description: "300 gm"
               },
               {
                 id: "bento_chocolate",
-                title: "Chocolate Bento"
+                title: "Chocolate Bento",
+                description: "300 gm"
               },
               {
                 id: "bento_premium",
-                title: "Premium Bento"
+                title: "Premium Bento",
+                description: "300 gm"
               }
             ]
           }]
@@ -1820,12 +1848,13 @@ Please share the details and we'll get started 😊`;
           button: "View Flavours",
           sections: [{
             title: "Classic Cakes",
+            description: "500 gm | 1 kg"
             rows: [
-              { id: "chocolate_vanilla", title: "Chocolate Vanilla" },
-              { id: "vanilla", title: "Vanilla" },
-              { id: "butter_scotch_caramel", title: "Butter Scotch Caramel" },
-              { id: "red_velvet", title: "Red Velvet" },
-              { id: "white_forest", title: "White Forest" }
+              { id: "chocolate_vanilla", title: "Chocolate Vanilla", description: "₹550 | ₹1000" },
+              { id: "vanilla", title: "Vanilla", description: "₹350 | ₹700" },
+              { id: "butter_scotch_caramel", title: "Butter Scotch Caramel", description: "₹550 | ₹1000" },
+              { id: "red_velvet", title: "Red Velvet", description: "₹600 | ₹1100" },
+              { id: "white_forest", title: "White Forest", description: "₹600 | ₹1100" }
             ]
           }]
         }
@@ -1856,13 +1885,14 @@ if (userText === "chocolate_cakes") {
           button: "View Flavours",
           sections: [{
             title: "Chocolate Cakes",
+            description: "500 gm | 1 kg"
             rows: [
-              { id: "chocolate_truffle", title: "Chocolate Truffle" },
-              { id: "chocochip", title: "Chocochip" },
-              { id: "chocolate_mousse", title: "Chocolate Mousse" },
-              { id: "oreo", title: "Oreo" },
-              { id: "kitkat", title: "KitKat" },
-              { id: "dairy_milk", title: "Dairy Milk" }
+              { id: "chocolate_truffle", title: "Chocolate Truffle", description: "₹650 | ₹1200" },
+              { id: "chocochip", title: "Chocochip", description: "₹600 | ₹1100" },
+              { id: "chocolate_mousse", title: "Chocolate Mousse", description: "₹600 | ₹1100" },
+              { id: "oreo", title: "Oreo", description: "₹550 | ₹1000" },
+              { id: "kitkat", title: "KitKat", description: "₹550 | ₹1000" },
+              { id: "dairy_milk", title: "Dairy Milk", description: "₹600 | ₹1100" }
             ]
           }]
         }
@@ -1894,51 +1924,73 @@ if (userText === "premium_cakes") {
   sections: [
     {
       title: "Premium Cakes 1",
+      description: "500 gm | 1 kg",
       rows: [
         {
           id: "belgian_chocolate",
-          title: "Belgian Chocolate"
+          title: "Belgian Chocolate",
+          description: "₹700 | ₹1300"
         },
         {
           id: "rasmalai",
-          title: "Rasmalai"
+          title: "Rasmalai",
+          description: "₹700 | ₹1300"
         },
         {
           id: "rose_pista",
-          title: "Rose Pista"
+          title: "Rose Pista",
+          description: "₹750 | ₹1400"
         },
         {
           id: "hazelnut_rocher",
-          title: "Hazelnut Rocher"
+          title: "Hazelnut Rocher",
+          description: "₹950 | ₹1800"
         },
         {
           id: "tiramisu",
-          title: "Tiramisu"
+          title: "Tiramisu",
+          description: "₹950 | ₹1800"
         },
         {
           id: "roll_up_chocolate",
-          title: "Roll Up Chocolate"
+          title: "Roll Up Chocolate",
+          description: "₹650 | ₹1200"
         }
       ]
     },
     {
       title: "Premium Cakes 2",
+      description: "500 gm | 1 kg",
       rows: [
         {
           id: "red_velvet_choco_truffle",
-          title: "Red Velvet Choco"
+          title: "Red Velvet Choco",
+          description: "₹650 | ₹1200"
         },
         {
           id: "rich_butterscotch_crunch",
-          title: "Rich Butterscotch"
+          title: "Rich Butterscotch",
+          description: "₹650 | ₹1200"
         },
         {
           id: "heart_shaped_red_velvet",
-          title: "Heart Red Velvet"
+          title: "Heart Red Velvet",
+          description: "₹750 | ₹1400"
         },
         {
           id: "chocolate_truffle_bomb",
-          title: "Truffle Bomb"
+          title: "Truffle Bomb",
+          description: "₹750 | ₹1400"
+        },
+        {
+          id: "lotus_biscoff",
+          title: "Lotus Biscoff",
+          description: "₹650 | ₹1200"
+        },
+        {
+          id: "chocolate_mocha",
+          title: "Chocolate Mocha",
+          description: "₹700 | ₹1300"
         }
       ]
     }
@@ -1972,10 +2024,11 @@ if (userText === "fruit_cakes") {
           button: "View Flavours",
           sections: [{
             title: "Fruit Cakes",
+            description: "500 gm | 1 kg"
             rows: [
-              { id: "fresh_fruit", title: "Fresh Fruit" },
-              { id: "blueberry_fruit", title: "Blueberry" },
-              { id: "pineapple_fruit", title: "Pineapple" }
+              { id: "fresh_fruit", title: "Fresh Fruit",description: "₹650 | ₹1200" },
+              { id: "blueberry_fruit", title: "Blueberry",description: "₹700 | ₹1300" },
+              { id: "pineapple_fruit", title: "Pineapple",description: "₹450 | ₹900" }
             ]
           }]
         }
@@ -2151,7 +2204,7 @@ await axios.post(
       body: isBento
         ? `🎁 Selected Flavour: ${flavourMap[userText]}
 
-Weight: 300g
+Weight: 300 gm
 
 Please share:
 • Delivery or Pickup
