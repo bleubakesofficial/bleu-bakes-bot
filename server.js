@@ -2175,12 +2175,6 @@ Please share:
 );
   selectedFlavours[from] =
   flavourMap[userText];
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: from,
-      text: {
   return res.sendStatus(200);
 }
       if (
