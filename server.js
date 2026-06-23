@@ -593,7 +593,7 @@ delete selectedFlavours[from];
               rows: [
   { id: "custom_cake", title: "🎨 Custom Cakes" },
   { id: "cakes", title: "🎂 Cakes" },
-  { id: "bento_cakes", title: "🎁 Bento Cakes" },
+  { id: "bento_cakes", title: "🎁 Bento Cakes", description: "300" },
   { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
