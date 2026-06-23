@@ -1754,23 +1754,19 @@ Please share the details and we'll get started 😊`;
             rows: [
               {
                 id: "classic_cakes",
-                title: "Classic Cakes",
-                description: "500 gm | 1 kg"
+                title: "Classic Cakes"
               },
               {
                 id: "chocolate_cakes",
-                title: "Chocolate Cakes",
-                description: "500 gm | 1 kg"
+                title: "Chocolate Cakes"
               },
               {
                 id: "premium_cakes",
-                title: "Premium Cakes",
-                description: "500 gm | 1 kg"
+                title: "Premium Cakes"
               },
               {
                 id: "fruit_cakes",
-                title: "Fruit Cakes",
-                description: "500 gm | 1 kg"
+                title: "Fruit Cakes"
               }
             ]
           }]
