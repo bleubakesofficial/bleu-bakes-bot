@@ -263,7 +263,7 @@ RULES:
 Instead show categories:
 🎨 Custom Cakes
 🎂 Cakes
-🎁 Bento Cakes (300gm)
+🎁 Bento Cakes(300gm)
 🍰 Pastries & Cupcakes
 🫙 Jar Cakes
 🍫 Brownies
@@ -581,7 +581,7 @@ delete selectedFlavours[from];
               rows: [
   { id: "custom_cake", title: "🎨 Custom Cakes" },
   { id: "cakes", title: "🎂 Cakes" },
-  { id: "bento_cakes", title: "🎁 Bento Cakes (300gm)" },
+  { id: "bento_cakes", title: "🎁 Bento Cakes(300gm)" },
   { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
@@ -1762,7 +1762,7 @@ Please share the details and we'll get started 😊`;
           text: "🎁 Select Bento Cake Category"
         },
         action: {
-          button: "View Bento Cakes (300gm)",
+          button: "View Bento Cakes(300gm)",
           sections: [{
             title: "Bento Categories",
             rows: [
@@ -1993,7 +1993,7 @@ if (userText === "fruit_cakes") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Classic Bento Cakes (300gm)",
+            title: "Classic Bento Cakes(300gm)",
             rows: [
               { id: "bento_butterscotch", title: "Butterscotch" },
               { id: "bento_pineapple", title: "Pineapple" },
@@ -2030,7 +2030,7 @@ if (userText === "bento_chocolate") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Chocolate Bento Cakes (300gm)",
+            title: "Chocolate Bento Cakes(300gm)",
             rows: [
               { id: "bento_chocochip", title: "Chocochip" },
               { id: "bento_oreo", title: "Oreo" },
@@ -2065,7 +2065,7 @@ if (userText === "bento_premium") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Premium Bento Cakes (300gm)",
+            title: "Premium Bento Cakes(300gm)",
             rows: [
               { id: "bento_love_pearl", title: "Love & Pearl" },
               { id: "bento_chocolate_mocha", title: "Chocolate Mocha" },
