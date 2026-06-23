@@ -1993,7 +1993,7 @@ if (userText === "fruit_cakes") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Classic Bento Cakes(300gm)",
+            title: "Classic Bento Cakes",
             rows: [
               { id: "bento_butterscotch", title: "Butterscotch" },
               { id: "bento_pineapple", title: "Pineapple" },
@@ -2030,7 +2030,7 @@ if (userText === "bento_chocolate") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Chocolate Bento Cakes(300gm)",
+            title: "Chocolate Bento Cakes",
             rows: [
               { id: "bento_chocochip", title: "Chocochip" },
               { id: "bento_oreo", title: "Oreo" },
@@ -2065,7 +2065,7 @@ if (userText === "bento_premium") {
         action: {
           button: "View Flavours",
           sections: [{
-            title: "Premium Bento Cakes(300gm)",
+            title: "Premium Bento Cakes",
             rows: [
               { id: "bento_love_pearl", title: "Love & Pearl" },
               { id: "bento_chocolate_mocha", title: "Chocolate Mocha" },
