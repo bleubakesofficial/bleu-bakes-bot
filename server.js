@@ -365,7 +365,11 @@ Once all details are collected:
 Show a complete order summary.
 
 Then ask:
-"Would you like to confirm this order?"
+"Would you like to confirm this order?
+Reply:
+✅ Confirm Order
+➕ Add More Items
+❌ Cancel Order"
 Do NOT create an order immediately after collecting details.
 
 Only if customer explicitly says:
@@ -374,6 +378,14 @@ Only if customer explicitly says:
 * Yes Confirm
 * Place Order
 * Book It
+* Haan
+* Han
+* Ji
+* Kar Do
+* Order Kar Do
+* Book Kar Do
+* Confirm Kar Do
+* Yes
 AND all required order details have already been collected,
 
 then return:
@@ -1995,12 +2007,12 @@ if (userText === "fruit_cakes") {
           sections: [{
             title: "Classic Bento Cakes",
             rows: [
-              { id: "bento_butterscotch", title: "Butterscotch" },
-              { id: "bento_pineapple", title: "Pineapple" },
-              { id: "bento_red_velvet", title: "Red Velvet" },
-              { id: "bento_fresh_fruit", title: "Fresh Fruit" },
-              { id: "bento_chocolate_truffle", title: "Chocolate Truffle" },
-              { id: "bento_chocolate_vanilla", title: "Chocolate Vanilla" }
+              { id: "bento_butterscotch", title: "Butterscotch", description: "₹400" },
+              { id: "bento_pineapple", title: "Pineapple", description: "₹400" },
+              { id: "bento_red_velvet", title: "Red Velvet", description: "₹400" },
+              { id: "bento_fresh_fruit", title: "Fresh Fruit", description: "₹450" },
+              { id: "bento_chocolate_truffle", title: "Chocolate Truffle", description: "₹450" },
+              { id: "bento_chocolate_vanilla", title: "Chocolate Vanilla", description: "₹450" }
             ]
           }]
         }
@@ -2032,10 +2044,10 @@ if (userText === "bento_chocolate") {
           sections: [{
             title: "Chocolate Bento Cakes",
             rows: [
-              { id: "bento_chocochip", title: "Chocochip" },
-              { id: "bento_oreo", title: "Oreo" },
-              { id: "bento_kitkat", title: "KitKat" },
-              { id: "bento_dairymilk", title: "Dairy Milk" }
+              { id: "bento_chocochip", title: "Chocochip", description: "₹450" },
+              { id: "bento_oreo", title: "Oreo", description: "₹450" },
+              { id: "bento_kitkat", title: "KitKat", description: "₹450" },
+              { id: "bento_dairymilk", title: "Dairy Milk", description: "₹500" }
             ]
           }]
         }
@@ -2067,10 +2079,10 @@ if (userText === "bento_premium") {
           sections: [{
             title: "Premium Bento Cakes",
             rows: [
-              { id: "bento_love_pearl", title: "Love & Pearl" },
-              { id: "bento_chocolate_mocha", title: "Chocolate Mocha" },
-              { id: "bento_lotus_biscoff", title: "Lotus Biscoff" },
-              { id: "bento_belgian_chocolate", title: "Belgian Chocolate" }
+              { id: "bento_love_pearl", title: "Love & Pearl", description: "₹450" },
+              { id: "bento_chocolate_mocha", title: "Chocolate Mocha", description: "₹550" },
+              { id: "bento_lotus_biscoff", title: "Lotus Biscoff", description: "₹550" },
+              { id: "bento_belgian_chocolate", title: "Belgian Chocolate", description: "₹550" }
             ]
           }]
         }
@@ -2135,11 +2147,23 @@ if (flavourMap[userText]) {
       messaging_product: "whatsapp",
       to: from,
       text: {
-       body:
-`🎂 Selected Flavour: ${flavourMap[userText]}
+     const isBento =
+  userText.startsWith("bento_");
+
+body:
+isBento
+? `🎁 Selected Flavour: ${flavourMap[userText]}
+
+Weight: 300g
 
 Please share:
-• Weight / Quantity
+• Delivery or Pickup
+• Required Date
+• Required Time`
+: `🎂 Selected Flavour: ${flavourMap[userText]}
+
+Please share:
+• Weight
 • Delivery or Pickup
 • Required Date
 • Required Time`
