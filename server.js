@@ -263,7 +263,7 @@ RULES:
 Instead show categories:
 🎨 Custom Cakes
 🎂 Cakes
-🎁 Bento Cakes(300gm)
+🎁 Bento Cakes
 🍰 Pastries & Cupcakes
 🫙 Jar Cakes
 🍫 Brownies
@@ -593,7 +593,7 @@ delete selectedFlavours[from];
               rows: [
   { id: "custom_cake", title: "🎨 Custom Cakes" },
   { id: "cakes", title: "🎂 Cakes" },
-  { id: "bento_cakes", title: "🎁 Bento Cakes(300gm)" },
+  { id: "bento_cakes", title: "🎁 Bento Cakes" },
   { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
@@ -1774,7 +1774,7 @@ Please share the details and we'll get started 😊`;
           text: "🎁 Select Bento Cake Category"
         },
         action: {
-          button: "View Bento Cakes(300gm)",
+          button: "View Bento Cakes",
           sections: [{
             title: "Bento Categories",
             rows: [
