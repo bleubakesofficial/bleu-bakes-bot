@@ -2139,15 +2139,7 @@ if (userText === "bento_premium") {
   bento_belgian_chocolate: "Belgian Chocolate"
 };
 if (flavourMap[userText]) {
-  selectedFlavours[from] =
-  flavourMap[userText];
-  await axios.post(
-    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: from,
-      text: {
-     const isBento =
+   const isBento =
   userText.startsWith("bento_");
 
 await axios.post(
@@ -2181,6 +2173,14 @@ Please share:
     }
   }
 );
+  selectedFlavours[from] =
+  flavourMap[userText];
+  await axios.post(
+    `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
   return res.sendStatus(200);
 }
       if (
