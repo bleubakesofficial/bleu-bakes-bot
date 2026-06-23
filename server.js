@@ -2150,9 +2150,14 @@ if (flavourMap[userText]) {
      const isBento =
   userText.startsWith("bento_");
 
-body:
-isBento
-? `🎁 Selected Flavour: ${flavourMap[userText]}
+await axios.post(
+  `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
+  {
+    messaging_product: "whatsapp",
+    to: from,
+    text: {
+      body: isBento
+        ? `🎁 Selected Flavour: ${flavourMap[userText]}
 
 Weight: 300g
 
@@ -2160,22 +2165,22 @@ Please share:
 • Delivery or Pickup
 • Required Date
 • Required Time`
-: `🎂 Selected Flavour: ${flavourMap[userText]}
+        : `🎂 Selected Flavour: ${flavourMap[userText]}
 
 Please share:
 • Weight
 • Delivery or Pickup
 • Required Date
 • Required Time`
-      }
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
-      }
     }
-  );
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+      "Content-Type": "application/json"
+    }
+  }
+);
   return res.sendStatus(200);
 }
       if (
