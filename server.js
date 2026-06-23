@@ -1848,7 +1848,7 @@ Please share the details and we'll get started 😊`;
           button: "View Flavours",
           sections: [{
             title: "Classic Cakes",
-            description: "500 gm | 1 kg"
+            description: "500 gm | 1 kg",
             rows: [
               { id: "chocolate_vanilla", title: "Chocolate Vanilla", description: "₹550 | ₹1000" },
               { id: "vanilla", title: "Vanilla", description: "₹350 | ₹700" },
@@ -1885,7 +1885,7 @@ if (userText === "chocolate_cakes") {
           button: "View Flavours",
           sections: [{
             title: "Chocolate Cakes",
-            description: "500 gm | 1 kg"
+            description: "500 gm | 1 kg",
             rows: [
               { id: "chocolate_truffle", title: "Chocolate Truffle", description: "₹650 | ₹1200" },
               { id: "chocochip", title: "Chocochip", description: "₹600 | ₹1100" },
@@ -2024,7 +2024,7 @@ if (userText === "fruit_cakes") {
           button: "View Flavours",
           sections: [{
             title: "Fruit Cakes",
-            description: "500 gm | 1 kg"
+            description: "500 gm | 1 kg",
             rows: [
               { id: "fresh_fruit", title: "Fresh Fruit",description: "₹650 | ₹1200" },
               { id: "blueberry_fruit", title: "Blueberry",description: "₹700 | ₹1300" },
