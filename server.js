@@ -286,7 +286,7 @@ Pricing:
 • Use Cake pricing for 500g and above
 
 CUSTOM CAKE PRICING RULES:
-• Minimum custom cake weight: 300g
+• Minimum custom cake weight: 300gm
 • Maximum custom cake weight: Any weight
 • For 300g custom cakes use Bento pricing.
 • For 500g and above use Cake pricing.
@@ -593,7 +593,7 @@ delete selectedFlavours[from];
               rows: [
   { id: "custom_cake", title: "🎨 Custom Cakes" },
   { id: "cakes", title: "🎂 Cakes" },
-  { id: "bento_cakes", title: "🎁 Bento Cakes", description: "300" },
+  { id: "bento_cakes", title: "🎁 Bento Cakes", description: "300gm" },
   { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
   { id: "brownies", title: "🍫 Brownies" },
