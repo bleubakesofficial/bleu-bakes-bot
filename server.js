@@ -571,14 +571,15 @@ We will review everything and get back to you during working hours (10 AM – 10
   );
        return res.sendStatus(200);
      }
- await axios.post(
+  if (userText === "new_order") {
+     await axios.post(
   `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`,
   {
     messaging_product: "whatsapp",
     to: from,
     type: "document",
     document: {
-      link: "file:///Users/mayankkhatri/Downloads/Menu_BB.pdf",
+      link: "https://drive.google.com/file/d/1dVDbN5IOzb8wdFdovMrFtDcI5iDxK3wY/view?usp=sharing",
       filename: "Bleu_Bakes_Menu.pdf"
     }
   },
@@ -589,7 +590,6 @@ We will review everything and get back to you during working hours (10 AM – 10
     }
   }
 );
-  if (userText === "new_order") {
    await saveOrderState(from, "");
 delete selectedFlavours[from];
   await axios.post(
