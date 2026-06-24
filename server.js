@@ -602,7 +602,7 @@ delete selectedFlavours[from];
         type: "list",
         body: {
          text:
-`📖 Click the PDF below to see our menu
+`📖 Click the PDF to see our menu
 
 🎂 What would you like to order?`
         },
@@ -613,7 +613,7 @@ delete selectedFlavours[from];
               title: "Menu Categories",
               rows: [
   { id: "custom_cake", title: "🎨 Custom Cakes" },
-  { id: "cakes", title: "🎂 Cakes" },
+  { id: "cakes", title: "🎂 Cakes", description: "500 gm | 1 kg" },
   { id: "bento_cakes", title: "🎁 Bento Cakes", description: "300gm" },
   { id: "pastries_cupcakes", title: "🍰 Pastries & Cupcakes" },
   { id: "jar_cakes", title: "🫙 Jar Cakes" },
