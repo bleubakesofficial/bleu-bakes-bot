@@ -602,7 +602,7 @@ delete selectedFlavours[from];
         type: "list",
         body: {
          text:
-`📖 View Our Menu Above
+`📖 Click the PDF below to see our menu
 
 🎂 What would you like to order?`
         },
@@ -1754,19 +1754,23 @@ Please share the details and we'll get started 😊`;
             rows: [
               {
                 id: "classic_cakes",
-                title: "Classic Cakes"
+                title: "Classic Cakes",
+                description: "500 gm | 1 kg" 
               },
               {
                 id: "chocolate_cakes",
-                title: "Chocolate Cakes"
+                title: "Chocolate Cakes",
+                description: "500 gm | 1 kg"
               },
               {
                 id: "premium_cakes",
-                title: "Premium Cakes"
+                title: "Premium Cakes",
+                description: "500 gm | 1 kg"
               },
               {
                 id: "fruit_cakes",
-                title: "Fruit Cakes"
+                title: "Fruit Cakes",
+                description: "500 gm | 1 kg"
               }
             ]
           }]
@@ -1844,7 +1848,6 @@ Please share the details and we'll get started 😊`;
           button: "View Flavours",
           sections: [{
             title: "Classic Cakes",
-            description: "500 gm | 1 kg",
             rows: [
               { id: "chocolate_vanilla", title: "Chocolate Vanilla", description: "₹550 | ₹1000" },
               { id: "vanilla", title: "Vanilla", description: "₹350 | ₹700" },
@@ -1881,7 +1884,6 @@ if (userText === "chocolate_cakes") {
           button: "View Flavours",
           sections: [{
             title: "Chocolate Cakes",
-            description: "500 gm | 1 kg",
             rows: [
               { id: "chocolate_truffle", title: "Chocolate Truffle", description: "₹650 | ₹1200" },
               { id: "chocochip", title: "Chocochip", description: "₹600 | ₹1100" },
@@ -1920,7 +1922,6 @@ if (userText === "premium_cakes") {
   sections: [
     {
       title: "Premium Cakes 1",
-      description: "500 gm | 1 kg",
       rows: [
         {
           id: "belgian_chocolate",
@@ -1956,7 +1957,6 @@ if (userText === "premium_cakes") {
     },
     {
       title: "Premium Cakes 2",
-      description: "500 gm | 1 kg",
       rows: [
         {
           id: "red_velvet_choco_truffle",
@@ -2020,7 +2020,6 @@ if (userText === "fruit_cakes") {
           button: "View Flavours",
           sections: [{
             title: "Fruit Cakes",
-            description: "500 gm | 1 kg",
             rows: [
               { id: "fresh_fruit", title: "Fresh Fruit",description: "₹650 | ₹1200" },
               { id: "blueberry_fruit", title: "Blueberry",description: "₹700 | ₹1300" },
