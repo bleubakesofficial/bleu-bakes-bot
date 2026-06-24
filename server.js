@@ -27,7 +27,6 @@ app.get("/webhook", (req, res) => {
   }
   res.sendStatus(403);
 });
-
 async function getMenuData() {
   const client = await auth.getClient();
   const sheets = google.sheets({
@@ -212,7 +211,6 @@ MENU:
 ${menuText}
 NEW CUSTOMER MESSAGE:
 ${userMessage}
-
 Always maintain and update the current order state.
 Return:
 {
@@ -387,7 +385,6 @@ Only if customer explicitly says:
 * Confirm Kar Do
 * Yes
 AND all required order details have already been collected,
-
 then return:
 {
   "create_order": true
@@ -603,7 +600,6 @@ delete selectedFlavours[from];
         body: {
          text:
 `📖 Click the PDF to see our menu
-
 🎂 What would you like to order?`
         },
         action: {
@@ -972,7 +968,6 @@ return res.sendStatus(200);
       text: {
         body:
 `🎪 Let's plan something sweet!
-
 Please share the following details:
 👤 Name:
 📞 Mobile Number:
