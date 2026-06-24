@@ -579,7 +579,7 @@ We will review everything and get back to you during working hours (10 AM – 10
     to: from,
     type: "document",
     document: {
-      link: "https://drive.google.com/file/d/1dVDbN5IOzb8wdFdovMrFtDcI5iDxK3wY/view?usp=sharing",
+      link: "https://raw.githubusercontent.com/bleubakesofficial/bleu-bakes-bot/main/Menu_BB.pdf",
       filename: "Bleu_Bakes_Menu.pdf"
     }
   },
